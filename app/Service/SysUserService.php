@@ -13,6 +13,7 @@ use App\Model\Dao\SysRoleDao;
 use App\Model\Dao\SysUserDao;
 use App\Model\SysMenu;
 use App\Service\Formatter\SysMenuFormatter;
+use App\Service\Formatter\SysRoleFormatter;
 use App\Service\Formatter\SysUserFormatter;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;

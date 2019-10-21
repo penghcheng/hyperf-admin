@@ -130,7 +130,7 @@ class SysUserService extends Service
         if ($user_id != 1) {
             $where .= " and a.create_user_id = " . $user_id;
         }
-        
+
         if (!empty($username)) {
             $where .= " and a.username like '%" . $username . "%'";
         }

@@ -31,4 +31,30 @@ class SysUserFormatter extends Formatter
             'createTime' => $model->create_time,
         ];
     }
+
+    public function arr($model)
+    {
+        return [
+            'userId' => $model['user_id'],
+            'username' => $model['username'],
+            'status' => $model['status'],
+            'salt' => $model['salt'],
+            'roleIdList' => null,
+            'password' => $model['password'],
+            'mobile' => $model['mobile'],
+            'email' => $model['email'],
+            'createUserId' => $model['create_user_id'],
+            'createTime' => $model['create_time'],
+        ];
+    }
+
+    public function formatArr($models)
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $item = self::arr($model);
+            $result[] = $item;
+        }
+        return $result;
+    }
 }

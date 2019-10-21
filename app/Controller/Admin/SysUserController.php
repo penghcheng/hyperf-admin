@@ -90,14 +90,22 @@ class SysUserController extends AbstractController
     }
 
 
+    /**
+     * 管理员list
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function sysUserList()
     {
         $userId = JwtInstance::instance()->build()->getId();
 
-        $this->sysUserService->getSysUserList($userId);
+        $username = (string)$this->request->input('username');
+        $page = (int)$this->request->input('page');
+        $limit = (int)$this->request->input('limit');
+
+        $result = $this->sysUserService->getSysUserList($userId,$username,$limit,$page);
 
         return $this->response->success([
-            'page' => []
+            'page' => $result
         ]);
     }
 

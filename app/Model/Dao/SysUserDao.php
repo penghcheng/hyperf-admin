@@ -54,6 +54,7 @@ class SysUserDao extends Service
         return $model;
     }
 
+
     /**
      * 获取管理用户的role_id
      * @param $user_id
@@ -71,12 +72,24 @@ class SysUserDao extends Service
     }
 
 
-    public function getTotalCount(int $user_id = 1):int
+    /**
+     * 根据条件获取totalCount
+     * @param int $user_id
+     * @param string $username
+     * @return int
+     */
+    public function getTotalCount(int $user_id = 1,string $username):int
     {
+        $where = [];
+        if(!empty($username)){
+            $where['username'] = ['like',"'%".$username."%'"];
+        }
+
         if ($user_id == 1) {
-            $count = Db::table('sys_user')->count();
+            $count = Db::table('sys_user')->where($where)->count();
         } else {
-            $count = Db::table('sys_user')->where("create_user_id",$user_id)->count();
+            $where['create_user_id'] = $user_id;
+            $count = Db::table('sys_user')->where($where)->count();
         }
         return $count;
     }

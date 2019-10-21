@@ -12,6 +12,7 @@ namespace App\Service;
 use App\Model\Dao\SysUserDao;
 use App\Model\SysMenu;
 use App\Service\Formatter\SysMenuFormatter;
+use App\Service\Formatter\SysUserFormatter;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 
@@ -24,6 +25,7 @@ class SysUserService extends Service
      * @var SysUserDao
      */
     protected $sysUserDao;
+
 
     /**
      * 菜单导航,权限信息
@@ -102,14 +104,43 @@ class SysUserService extends Service
         return [$menuList, $permArrays];
     }
 
+
     /**
      * 管理员list
      * @param int $user_id
      * @return array
      */
-    public function getSysUserList(int $user_id):array
+    public function getSysUserList(int $user_id, string $username,int $pageSize = 10,int $currPage = 1):array
     {
+        $totalCount = $this->sysUserDao->getTotalCount($user_id,$username);
 
+        if($totalCount>0){
+            $totalPage = ceil($totalCount/$pageSize);
+        }else{
+            $totalPage = 0;
+        }
+
+        if($currPage <= 0 || $currPage > $totalPage){
+            $currPage = 1;
+        }
+
+        $startCount = ($currPage-1)*$pageSize;
+
+        $sysUsers = Db::select("SELECT * FROM sys_user a JOIN (select user_id from sys_user limit ".$startCount.", ".$pageSize.") b ON a.user_id = b.user_id where a.username like '%".$username."%';");
+
+        if(!empty($sysUsers)){
+            $sysUsers = SysUserFormatter::instance()->formatArr($sysUsers);
+        }
+
+        $result = [
+            'totalCount' => $totalCount,
+            'pageSize' => $pageSize,
+            'totalPage' => $totalPage,
+            'currPage' => $currPage,
+            'list' => $sysUsers
+        ];
+
+        return $result;
     }
 
 }

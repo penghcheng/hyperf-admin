@@ -22,13 +22,9 @@ class IndexController extends AbstractController
         $user = $this->request->input('user', 'Hyperf');
         $method = $this->request->getMethod();
 
-        $sysUser= SysUser::query()->where("user_id",1)->first();
-        $token = JwtInstance::instance()->encode($sysUser);
-
         return $this->response->success([
             'method' => $method,
-            'message' => "Hello {$user}.",
-            'token' => $token
+            'message' => "Hello {$user}."
         ]);
     }
 }

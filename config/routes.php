@@ -2,25 +2,16 @@
 
 declare(strict_types=1);
 
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://doc.hyperf.io
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
- */
-
 use Hyperf\HttpServer\Router\Router;
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
 
-//管理员登录
-Router::post('/renren-fast/sys/login', 'App\Controller\Admin\SysUserController@login');
+Router::post('/renren-fast/sys/login', 'App\Controller\Admin\SysUserController@login'); //管理员登录
 
 Router::addGroup('/renren-fast/', function () {
-    Router::get('sys/menu/nav', 'App\Controller\Admin\SysUserController@menu_nav');
-    Router::get('sys/user/info', 'App\Controller\Admin\SysUserController@info');
+    Router::get('sys/menu/nav', 'App\Controller\Admin\SysUserController@menu_nav'); // 登录用户的菜单和权限
+    Router::get('sys/user/info', 'App\Controller\Admin\SysUserController@info'); // 登录的用户信息
+    Router::get('sys/user/list', 'App\Controller\Admin\SysUserController@sysUserList'); // 管理员用户列表
 },
     ['middleware' => [App\Middleware\AdminMiddleware::class]]
 );

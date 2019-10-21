@@ -70,65 +70,14 @@ class SysUserDao extends Service
         return $model;
     }
 
-    /**
-     * 获取菜单和权限
-     * @param $role_id
-     * @param $user_id
-     * @return array
-     */
-    public function getUserMenusPermissions($role_id, $user_id)
+
+    public function getTotalCount(int $user_id = 1):int
     {
         if ($user_id == 1) {
-            $datas = Db::select('SELECT * FROM sys_menu;');
+            $count = Db::table('sys_user')->count();
         } else {
-            $datas = Db::select("SELECT * FROM sys_role_menu where role_id=" . $role_id . ";");
+            $count = Db::table('sys_user')->where("create_user_id",$user_id)->count();
         }
-
-        $menu_ids = array_column($datas, 'menu_id');
-
-        $menu_category = Db::select('SELECT * FROM sys_menu where  parent_id = 0 and type = 0 and menu_id in (' . implode(',', $menu_ids) . ') order by order_num asc;');
-
-        $menuList = [];
-        foreach ($menu_category as $key => $value) {
-            $model = SysMenu::query()->where("menu_id", $value['menu_id'])->first();
-            $format = SysMenuFormatter::instance()->base($model);
-
-            $menus = Db::select('SELECT * FROM sys_menu where  parent_id = ' . $format['menuId'] . ' and type = 1 order by order_num asc;');
-
-            $arr = [];
-            foreach ($menus as $v) {
-                $arr [] = SysMenuFormatter::instance()->arr($v);
-            }
-            $format['list'] = $arr;
-
-            $menuList[] = $format;
-        }
-
-        $permissionArrs = Db::select('SELECT * FROM sys_menu where  menu_id in (' . implode(',', $menu_ids) . ') order by order_num asc;');
-        $permissionArrs = array_column($permissionArrs, 'perms');
-
-        $permissions = [];
-        foreach ($permissionArrs as $perms) {
-            if (!empty($perms)) {
-                if (explode(',', $perms) > 0) {
-                    if (!empty($permissions)) {
-                        $permissions = array_merge($permissions, explode(',', $perms));
-                    } else {
-                        $permissions = explode(',', $perms);
-                    }
-                } else {
-                    $permissions [] = $perms;
-                }
-            }
-        }
-
-        $permissions = array_unique($permissions);
-
-        $permArrays = [];
-        foreach ($permissions as $key => $val) {
-            $permArrays[] = $val;
-        }
-
-        return [$menuList, $permArrays];
+        return $count;
     }
 }

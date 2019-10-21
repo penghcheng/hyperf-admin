@@ -44,9 +44,6 @@ class SysUserController extends AbstractController
         //uuid: "10b0c6c3-21df-498c-8daf-57320990461b"
 
         $username = (string)$this->request->input('username');
-
-        var_dump("username:" . $username);
-
         $password = (string)$this->request->input('password');
 
         $sysUser = ApplicationContext::getContainer()->get(SysUserDao::class)->getOne($username);
@@ -90,6 +87,19 @@ class SysUserController extends AbstractController
         return $this->response->success([
             'user' => $format
         ]);
-
     }
+
+
+    public function sysUserList()
+    {
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $this->sysUserService->getSysUserList($userId);
+
+        return $this->response->success([
+            'page' => []
+        ]);
+    }
+
+
 }

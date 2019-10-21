@@ -91,6 +91,7 @@ class SysUserDao extends Service
             $where['create_user_id'] = $user_id;
             $count = Db::table('sys_user')->where($where)->count();
         }
+
         return $count;
     }
 }

@@ -32,13 +32,13 @@ class SysUserService extends Service
      * @param int $user_id
      * @return array
      */
-    public function getNemuNav(int $user_id):array
+    public function getNemuNav(int $user_id): array
     {
         $roleModel = null;
-        if($user_id !=1){
+        if ($user_id != 1) {
             $roleModel = $this->sysUserDao->getUserRole($user_id);
         }
-        return $this->getUserMenusPermissions($user_id != 1 ? $roleModel['role_id']: 0,$user_id);
+        return $this->getUserMenusPermissions($user_id != 1 ? $roleModel['role_id'] : 0, $user_id);
     }
 
 
@@ -110,25 +110,34 @@ class SysUserService extends Service
      * @param int $user_id
      * @return array
      */
-    public function getSysUserList(int $user_id, string $username,int $pageSize = 10,int $currPage = 1):array
+    public function getSysUserList(int $user_id, string $username, int $pageSize = 10, int $currPage = 1): array
     {
-        $totalCount = $this->sysUserDao->getTotalCount($user_id,$username);
+        $totalCount = $this->sysUserDao->getTotalCount($user_id, $username);
 
-        if($totalCount>0){
-            $totalPage = ceil($totalCount/$pageSize);
-        }else{
+        if ($totalCount > 0) {
+            $totalPage = ceil($totalCount / $pageSize);
+        } else {
             $totalPage = 0;
         }
 
-        if($currPage <= 0 || $currPage > $totalPage){
+        if ($currPage <= 0 || $currPage > $totalPage) {
             $currPage = 1;
         }
 
-        $startCount = ($currPage-1)*$pageSize;
+        $startCount = ($currPage - 1) * $pageSize;
 
-        $sysUsers = Db::select("SELECT * FROM sys_user a JOIN (select user_id from sys_user limit ".$startCount.", ".$pageSize.") b ON a.user_id = b.user_id where a.username like '%".$username."%';");
+        $where = " 1=1 ";
+        if ($user_id != 1) {
+            $where .= " and a.create_user_id = " . $user_id;
+        }
+        
+        if (!empty($username)) {
+            $where .= " and a.username like '%" . $username . "%'";
+        }
 
-        if(!empty($sysUsers)){
+        $sysUsers = Db::select("SELECT * FROM sys_user a JOIN (select user_id from sys_user limit " . $startCount . ", " . $pageSize . ") b ON a.user_id = b.user_id where " . $where . ";");
+
+        if (!empty($sysUsers)) {
             $sysUsers = SysUserFormatter::instance()->formatArr($sysUsers);
         }
 

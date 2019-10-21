@@ -9,6 +9,7 @@
 namespace App\Service;
 
 
+use App\Model\Dao\SysRoleDao;
 use App\Model\Dao\SysUserDao;
 use App\Model\SysMenu;
 use App\Service\Formatter\SysMenuFormatter;
@@ -25,6 +26,13 @@ class SysUserService extends Service
      * @var SysUserDao
      */
     protected $sysUserDao;
+
+
+    /**
+     * @Inject()
+     * @var SysRoleDao
+     */
+    protected $sysRoleDao;
 
 
     /**
@@ -69,7 +77,7 @@ class SysUserService extends Service
 
             $arr = [];
             foreach ($menus as $v) {
-                $arr [] = SysMenuFormatter::instance()->arr($v);
+                $arr [] = SysMenuFormatter::instance()->forArray($v);
             }
             $format['list'] = $arr;
 
@@ -106,7 +114,7 @@ class SysUserService extends Service
 
 
     /**
-     * 管理员list
+     * 管理员管理list
      * @param int $user_id
      * @return array
      */
@@ -138,7 +146,7 @@ class SysUserService extends Service
         $sysUsers = Db::select("SELECT * FROM sys_user a JOIN (select user_id from sys_user limit " . $startCount . ", " . $pageSize . ") b ON a.user_id = b.user_id where " . $where . ";");
 
         if (!empty($sysUsers)) {
-            $sysUsers = SysUserFormatter::instance()->formatArr($sysUsers);
+            $sysUsers = SysUserFormatter::instance()->arrayFormat($sysUsers);
         }
 
         $result = [
@@ -148,7 +156,52 @@ class SysUserService extends Service
             'currPage' => $currPage,
             'list' => $sysUsers
         ];
+        return $result;
+    }
 
+    /**
+     * 角色管理list
+     * @param int $user_id
+     * @return array
+     */
+    public function getSysRoleList(int $user_id, string $roleName, int $pageSize = 10, int $currPage = 1): array
+    {
+        $totalCount = $this->sysRoleDao->getTotalCount($user_id, $roleName);
+
+        if ($totalCount > 0) {
+            $totalPage = ceil($totalCount / $pageSize);
+        } else {
+            $totalPage = 0;
+        }
+
+        if ($currPage <= 0 || $currPage > $totalPage) {
+            $currPage = 1;
+        }
+
+        $startCount = ($currPage - 1) * $pageSize;
+
+        $where = " 1=1 ";
+        if ($user_id != 1) {
+            $where .= " and a.create_user_id = " . $user_id;
+        }
+
+        if (!empty($roleName)) {
+            $where .= " and a.role_name like '%" . $roleName . "%'";
+        }
+
+        $sysRoles = Db::select("SELECT * FROM sys_role a JOIN (select role_id from sys_role limit " . $startCount . ", " . $pageSize . ") b ON a.role_id = b.role_id where " . $where . ";");
+
+        if (!empty($sysRoles)) {
+            $sysRoles = SysRoleFormatter::instance()->arrayFormat($sysRoles);
+        }
+
+        $result = [
+            'totalCount' => $totalCount,
+            'pageSize' => $pageSize,
+            'totalPage' => $totalPage,
+            'currPage' => $currPage,
+            'list' => $sysRoles
+        ];
         return $result;
     }
 

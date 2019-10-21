@@ -26,7 +26,7 @@ class SysMenuFormatter extends Formatter
         ];
     }
 
-    public function arr($model)
+    public function forArray($model)
     {
         return [
             'menuId' => $model['menu_id'],
@@ -43,7 +43,7 @@ class SysMenuFormatter extends Formatter
         ];
     }
 
-    public function formatArray($models)
+    public function collectionFormat($models)
     {
         $result = [];
         foreach ($models as $model) {

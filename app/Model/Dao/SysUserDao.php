@@ -14,17 +14,11 @@ namespace App\Model\Dao;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
-use App\Kernel\Log\Log;
-use App\Model\SysMenu;
-use App\Model\SysRoleMenu;
 use App\Model\SysUser;
 use App\Model\SysUserRole;
-use App\Service\Formatter\SysMenuFormatter;
-use App\Service\Formatter\SysRoleMenuFormatter;
-use App\Service\Service;
 use Hyperf\DbConnection\Db;
 
-class SysUserDao extends Service
+class SysUserDao
 {
     /**
      * @param $user_id

@@ -109,5 +109,24 @@ class SysUserController extends AbstractController
         ]);
     }
 
+    /**
+     * 角色管理list
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sysRoleList()
+    {
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $roleName = (string)$this->request->input('roleName');
+        $page = (int)$this->request->input('page');
+        $limit = (int)$this->request->input('limit');
+
+        $result = $this->sysUserService->getSysRoleList($userId,$roleName,$limit,$page);
+
+        return $this->response->success([
+            'page' => $result
+        ]);
+    }
+
 
 }

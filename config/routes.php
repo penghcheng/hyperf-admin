@@ -12,6 +12,7 @@ Router::addGroup('/renren-fast/', function () {
     Router::get('sys/menu/nav', 'App\Controller\Admin\SysUserController@menu_nav'); // 登录用户的菜单和权限
     Router::get('sys/user/info', 'App\Controller\Admin\SysUserController@info'); // 登录的用户信息
     Router::get('sys/user/list', 'App\Controller\Admin\SysUserController@sysUserList'); // 管理员用户列表
+    Router::get('sys/role/list', 'App\Controller\Admin\SysUserController@sysRoleList'); // 角色管理列表
 },
     ['middleware' => [App\Middleware\AdminMiddleware::class]]
 );

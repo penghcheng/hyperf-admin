@@ -18,6 +18,7 @@ use App\Model\SysUser;
 use App\Service\Formatter\SysUserFormatter;
 use App\Service\Instance\JwtInstance;
 use App\Service\SysUserService;
+use Hyperf\DbConnection\Db;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Di\Annotation\Inject;
 
@@ -37,11 +38,6 @@ class SysUserController extends AbstractController
      */
     public function login()
     {
-        //captcha: "87wxy"
-        //password: "admin"
-        //t: 1571621141329
-        //username: "admin"
-        //uuid: "10b0c6c3-21df-498c-8daf-57320990461b"
 
         $username = (string)$this->request->input('username');
         $password = (string)$this->request->input('password');
@@ -76,12 +72,14 @@ class SysUserController extends AbstractController
 
     /**
      * 用户信息
-     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function info()
+    public function getInfoByLoginUserId()
     {
+
         $userId = JwtInstance::instance()->build()->getId();
-        $model = SysUser::query()->where('user_id', $userId)->first();
+
+        $model = $this->sysUserService->getSysUserData($userId);
+
         $format = SysUserFormatter::instance()->base($model);
 
         return $this->response->success([
@@ -89,6 +87,25 @@ class SysUserController extends AbstractController
         ]);
     }
 
+    /**
+     * 用户信息 userId
+     * @param $id
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function getInfoByUserId($id)
+    {
+        JwtInstance::instance()->build()->getId();
+
+        $userId = $id;
+
+        $model = $this->sysUserService->getSysUserData($userId);
+
+        $format = SysUserFormatter::instance()->base($model);
+
+        return $this->response->success([
+            'user' => $format
+        ]);
+    }
 
     /**
      * 管理员list
@@ -102,7 +119,7 @@ class SysUserController extends AbstractController
         $page = (int)$this->request->input('page');
         $limit = (int)$this->request->input('limit');
 
-        $result = $this->sysUserService->getSysUserList($userId,$username,$limit,$page);
+        $result = $this->sysUserService->getSysUserList($userId, $username, $limit, $page);
 
         return $this->response->success([
             'page' => $result
@@ -121,11 +138,81 @@ class SysUserController extends AbstractController
         $page = (int)$this->request->input('page');
         $limit = (int)$this->request->input('limit');
 
-        $result = $this->sysUserService->getSysRoleList($userId,$roleName,$limit,$page);
+        $result = $this->sysUserService->getSysRoleList($userId, $roleName, $limit, $page);
 
         return $this->response->success([
             'page' => $result
         ]);
+    }
+
+    /**
+     * select角色list
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sysRoleSelect()
+    {
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $result = $this->sysUserService->getSysRoleList($userId, "", 999, 1);
+
+        return $this->response->success([
+            'list' => $result['list']
+        ]);
+    }
+
+    /**
+     * 保存管理员
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Exception
+     */
+    public function sysUserSave()
+    {
+
+        $createUserId = JwtInstance::instance()->build()->getId();
+
+        $username = (string)$this->request->input('username');
+        $password = (string)$this->request->input('password');
+        $mobile = $this->request->input('mobile');
+        $email = (string)$this->request->input('email');
+        $roleIdList = $this->request->input('roleIdList'); //组数
+        $salt = (string)$this->request->input('salt');
+        $status = (int)$this->request->input('status');
+
+        $result = $this->sysUserService->sysUserSave($username, $password, $email, $mobile, $roleIdList, $salt, $status, $createUserId);
+
+        if ($result) {
+            return $this->response->success();
+        }else{
+            return $this->response->error("保存失败");
+        }
+
+    }
+
+
+    /**
+     * update管理员
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sysUserUpdate()
+    {
+
+        JwtInstance::instance()->build()->getId();
+
+        $username = (string)$this->request->input('username');
+        $password = (string)$this->request->input('password');
+        $mobile = $this->request->input('mobile');
+        $email = (string)$this->request->input('email');
+        $roleIdList = $this->request->input('roleIdList'); //组数
+        $salt = (string)$this->request->input('salt');
+        $status = (int)$this->request->input('status');
+        $userId = (int)$this->request->input('userId');
+
+        $result = $this->sysUserService->sysUserSave($username, $password, $email, $mobile, $roleIdList, $salt, $status, null, $userId);
+        if ($result) {
+            return $this->response->success();
+        }else{
+            return $this->response->error("修改失败");
+        }
     }
 
 

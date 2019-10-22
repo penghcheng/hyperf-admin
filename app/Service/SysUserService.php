@@ -12,6 +12,7 @@ namespace App\Service;
 use App\Model\Dao\SysRoleDao;
 use App\Model\Dao\SysUserDao;
 use App\Model\SysMenu;
+use App\Model\SysUser;
 use App\Service\Formatter\SysMenuFormatter;
 use App\Service\Formatter\SysRoleFormatter;
 use App\Service\Formatter\SysUserFormatter;
@@ -34,6 +35,22 @@ class SysUserService extends Service
      * @var SysRoleDao
      */
     protected $sysRoleDao;
+
+
+    /**
+     * 获取系统用户信息
+     * @param $userId
+     * @return mixed
+     */
+    public function getSysUserData($userId)
+    {
+        $model = SysUser::query()->where('user_id', $userId)->first();
+
+        $role_ids = Db::table('sys_user_role')->where("user_id", $userId)->pluck('role_id');
+        $model->roleIdList = $role_ids;
+
+        return $model;
+    }
 
 
     /**
@@ -160,6 +177,7 @@ class SysUserService extends Service
         return $result;
     }
 
+
     /**
      * 角色管理list
      * @param int $user_id
@@ -204,6 +222,96 @@ class SysUserService extends Service
             'list' => $sysRoles
         ];
         return $result;
+    }
+
+
+    /**
+     * 保存用户信息
+     * @param string $username
+     * @param string $password
+     * @param string $email
+     * @param string $mobile
+     * @param array $roleIdList
+     * @param string $salt
+     * @param int $status
+     * @param int $createUserId
+     * @param int $updateUserId
+     * @return bool
+     */
+    public function sysUserSave(string $username, string $password, string $email, string $mobile, array $roleIdList, string $salt, int $status, ?int $createUserId, int $updateUserId = 0): bool
+    {
+
+        if ($updateUserId == 0) {
+
+            // 添加管理员
+
+            $user_id = Db::table('sys_user')->insertGetId([
+                'username' => $username,
+                'password' => password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]),
+                'email' => $email,
+                'mobile' => $mobile,
+                'salt' => $salt,
+                'status' => $status,
+                'create_user_id' => $createUserId,
+                'create_time' => date("Y-m-d h:i:s")
+            ]);
+
+            $roles = [];
+            if (!empty($roleIdList) && !empty($user_id)) {
+                foreach ($roleIdList as $value) {
+                    $roles[] = [
+                        'user_id' => $user_id,
+                        'role_id' => $value
+                    ];
+                }
+            }
+
+            if (!empty($roles)) {
+                Db::table('sys_user_role')->insert($roles);
+            }
+
+            return !empty($user_id) ? true : false;
+
+        } else {
+
+            // 更新管理员
+
+            $update = [
+                'username' => $username,
+                'email' => $email,
+                'mobile' => $mobile,
+                'salt' => $salt,
+                'status' => $status
+            ];
+
+            if (!empty($password)) {
+                $update['password'] = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
+            }
+
+            $bb = Db::table('sys_user')->where("user_id", $updateUserId)->update($update);
+            if ($bb) {
+
+                Db::table('sys_user_role')->where("user_id", $updateUserId)->delete();
+
+                $roles = [];
+                if (!empty($roleIdList) && !empty($updateUserId)) {
+                    foreach ($roleIdList as $value) {
+                        $roles[] = [
+                            'user_id' => $updateUserId,
+                            'role_id' => $value
+                        ];
+                    }
+                }
+
+                if (!empty($roles)) {
+                    Db::table('sys_user_role')->insert($roles);
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

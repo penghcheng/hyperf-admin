@@ -23,12 +23,13 @@ class SysUser extends Model
      * @var string
      */
     protected $table = 'sys_user';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ["username","password","email","mobile","salt","status","create_user_id"];
     /**
      * The attributes that should be cast to native types.
      *

@@ -15,7 +15,7 @@ class SysUserFormatter extends Formatter
             'username' => $model->username,
             'status' => $model->status,
             'salt' => $model->salt,
-            'roleIdList' => null,
+            'roleIdList' => $model->roleIdList ?? null,
             'password' => $model->password,
             'mobile' => $model->mobile,
             'email' => $model->email,

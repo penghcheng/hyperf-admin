@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Kernel\Http;
 
+use App\Constants\ErrorCode;
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Utils\Context;
@@ -36,6 +37,10 @@ class Response
         $this->response = $container->get(ResponseInterface::class);
     }
 
+    /**
+     * @param array $data
+     * @return PsrResponseInterface
+     */
     public function success($data = [])
     {
         $data = array_merge([
@@ -46,7 +51,12 @@ class Response
         return $this->response->json($data);
     }
 
-    public function fail($code, $message = '')
+    /**
+     * @param string $message
+     * @param int $code
+     * @return PsrResponseInterface
+     */
+    public function error($message = '', $code = ErrorCode::SERVER_ERROR)
     {
         return $this->response->json([
             'code' => $code,

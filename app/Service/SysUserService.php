@@ -62,28 +62,24 @@ class SysUserService extends Service
     {
         $roleModel = null;
         if ($user_id != 1) {
-            $roleModel = $this->sysUserDao->getUserRole($user_id);
+            $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
+            $role_ids=$role_ids->toArray();
+            $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (".implode(',',$role_ids).");");
+        }else{
+            $datas = Db::select('SELECT * FROM sys_menu;');
         }
-        return $this->getUserMenusPermissions($user_id != 1 ? $roleModel['role_id'] : 0, $user_id);
+        $menu_ids = array_column($datas, 'menu_id');
+        return $this->getUserMenusPermissions($menu_ids, $user_id);
     }
 
 
     /**
      * 获取菜单和权限
-     * @param $role_id
-     * @param $user_id
+     * @param $menu_ids
      * @return array
      */
-    public function getUserMenusPermissions($role_id, $user_id)
+    public function getUserMenusPermissions($menu_ids)
     {
-        if ($user_id == 1) {
-            $datas = Db::select('SELECT * FROM sys_menu;');
-        } else {
-            $datas = Db::select("SELECT * FROM sys_role_menu where role_id=" . $role_id . ";");
-        }
-
-        $menu_ids = array_column($datas, 'menu_id');
-
         $menu_category = Db::select('SELECT * FROM sys_menu where  parent_id = 0 and type = 0 and menu_id in (' . implode(',', $menu_ids) . ') order by order_num asc;');
 
         $menuList = [];

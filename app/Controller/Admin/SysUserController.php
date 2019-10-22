@@ -44,6 +44,16 @@ class SysUserController extends AbstractController
 
         $sysUser = ApplicationContext::getContainer()->get(SysUserDao::class)->getOne($username);
 
+        $format = SysUserFormatter::instance()->base($sysUser);
+
+        if (!password_verify($password, $format['password'])) {
+            return $this->response->error("用户名或密码错误.");
+        }
+
+        if ($format['status'] != 1) {
+            return $this->response->error("该用户禁止登陆.");
+        }
+
         $token = JwtInstance::instance()->encode($sysUser);
 
         return $this->response->success([
@@ -182,7 +192,7 @@ class SysUserController extends AbstractController
 
         if ($result) {
             return $this->response->success();
-        }else{
+        } else {
             return $this->response->error("保存失败");
         }
 
@@ -210,7 +220,7 @@ class SysUserController extends AbstractController
         $result = $this->sysUserService->sysUserSave($username, $password, $email, $mobile, $roleIdList, $salt, $status, null, $userId);
         if ($result) {
             return $this->response->success();
-        }else{
+        } else {
             return $this->response->error("修改失败");
         }
     }

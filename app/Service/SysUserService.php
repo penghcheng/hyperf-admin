@@ -288,27 +288,24 @@ class SysUserService extends Service
                 $update['password'] = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
             }
 
-            $bb = Db::table('sys_user')->where("user_id", $updateUserId)->update($update);
-            if ($bb) {
+            Db::table('sys_user')->where("user_id", $updateUserId)->update($update);
+            Db::table('sys_user_role')->where("user_id", $updateUserId)->delete();
 
-                Db::table('sys_user_role')->where("user_id", $updateUserId)->delete();
-
-                $roles = [];
-                if (!empty($roleIdList) && !empty($updateUserId)) {
-                    foreach ($roleIdList as $value) {
-                        $roles[] = [
-                            'user_id' => $updateUserId,
-                            'role_id' => $value
-                        ];
-                    }
+            $roles = [];
+            if (!empty($roleIdList) && !empty($updateUserId)) {
+                foreach ($roleIdList as $value) {
+                    $roles[] = [
+                        'user_id' => $updateUserId,
+                        'role_id' => $value
+                    ];
                 }
-
-                if (!empty($roles)) {
-                    Db::table('sys_user_role')->insert($roles);
-                }
-
-                return true;
             }
+
+            if (!empty($roles)) {
+                Db::table('sys_user_role')->insert($roles);
+            }
+
+            return true;
         }
 
         return false;

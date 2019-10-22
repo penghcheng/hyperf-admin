@@ -36,6 +36,7 @@ class JwtInstance
         return JWT::encode([
             'iss' => 'xxx.com', //签发者 可选
             'iat' => time(), //签发时间
+            'expire' => time() + 12 * 3600,
             'id' => $sysUser->user_id
         ], self::KEY);
     }
@@ -46,6 +47,9 @@ class JwtInstance
             $decoded = (array)JWT::decode($token, self::KEY, ['HS256']);
         } catch (\Throwable $exception) {
             return $this;
+        }
+        if ($decoded['expire'] < time()) {
+            throw new BusinessException(ErrorCode::TOKEN_INVALID);
         }
         if ($id = $decoded['id'] ?? null) {
             $this->user_id = $id;

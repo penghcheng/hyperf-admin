@@ -18,6 +18,7 @@ use App\Service\Formatter\SysRoleFormatter;
 use App\Service\Formatter\SysUserFormatter;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\ApplicationContext;
 
 class SysUserService extends Service
 {
@@ -60,16 +61,27 @@ class SysUserService extends Service
      */
     public function getNemuNav(int $user_id): array
     {
-        $roleModel = null;
+        $container = ApplicationContext::getContainer();
+        $redis = $container->get(\Redis::class);
+
+        $app_name = env('APP_NAME');
+        $cache_memunv = $redis->get($app_name . "_menu_nav:" . $user_id);
+
+        if (!empty($cache_memunv)) {
+            return json_decode($cache_memunv, true);
+        }
         if ($user_id != 1) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
-            $role_ids=$role_ids->toArray();
-            $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (".implode(',',$role_ids).");");
-        }else{
+            $role_ids = $role_ids->toArray();
+            $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (" . implode(',', $role_ids) . ");");
+        } else {
             $datas = Db::select('SELECT * FROM sys_menu;');
         }
         $menu_ids = array_column($datas, 'menu_id');
-        return $this->getUserMenusPermissions($menu_ids, $user_id);
+        $result = $this->getUserMenusPermissions($menu_ids, $user_id);
+
+        $redis->set($app_name . "_menu_nav:" . $user_id, json_encode($result), 60 * 60);
+        return $result;
     }
 
 

@@ -63,22 +63,6 @@ class SysUserController extends AbstractController
 
     }
 
-    /**
-     * 用户菜单导航
-     */
-    public function menu_nav()
-    {
-
-        $userId = JwtInstance::instance()->build()->getId();
-
-        [$menuList, $permissions] = $this->sysUserService->getNemuNav($userId);
-
-        return $this->response->success([
-            'menuList' => $menuList,
-            'permissions' => $permissions
-        ]);
-    }
-
 
     /**
      * 用户信息
@@ -136,39 +120,6 @@ class SysUserController extends AbstractController
         ]);
     }
 
-    /**
-     * 角色管理list
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function sysRoleList()
-    {
-        $userId = JwtInstance::instance()->build()->getId();
-
-        $roleName = (string)$this->request->input('roleName');
-        $page = (int)$this->request->input('page');
-        $limit = (int)$this->request->input('limit');
-
-        $result = $this->sysUserService->getSysRoleList($userId, $roleName, $limit, $page);
-
-        return $this->response->success([
-            'page' => $result
-        ]);
-    }
-
-    /**
-     * select角色list
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function sysRoleSelect()
-    {
-        $userId = JwtInstance::instance()->build()->getId();
-
-        $result = $this->sysUserService->getSysRoleList($userId, "", 999, 1);
-
-        return $this->response->success([
-            'list' => $result['list']
-        ]);
-    }
 
     /**
      * 保存管理员
@@ -235,25 +186,25 @@ class SysUserController extends AbstractController
     {
         $params = $this->request->post();
 
-        if(!is_array($params) || empty($params)){
+        if (!is_array($params) || empty($params)) {
             return $this->response->error("提交错误");
         }
 
 
-        if(in_array("1",$params)){
+        if (in_array("1", $params)) {
             return $this->response->error("超级管理员不能删除");
         }
 
         Db::beginTransaction();
-        try{
+        try {
 
-            Db::table('sys_user')->whereIn("user_id",$params)->delete();
-            Db::table('sys_user_role')->whereIn("user_id",$params)->delete();
+            Db::table('sys_user')->whereIn("user_id", $params)->delete();
+            Db::table('sys_user_role')->whereIn("user_id", $params)->delete();
             Db::commit();
 
             return $this->response->success();
 
-        } catch(\Throwable $ex){
+        } catch (\Throwable $ex) {
             Db::rollBack();
             return $this->response->error("删除失败");
         }

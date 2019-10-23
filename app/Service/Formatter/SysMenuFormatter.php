@@ -22,7 +22,8 @@ class SysMenuFormatter extends Formatter
             'icon' => $model->icon,
             'url' => $model->url,
             'orderNum' => $model->order_num,
-            'list' => null
+            'list' => null,
+            'open' => null
         ];
     }
 
@@ -39,7 +40,8 @@ class SysMenuFormatter extends Formatter
             'icon' => $model['icon'],
             'url' => $model['url'],
             'orderNum' => $model['order_num'],
-            'list' => null
+            'list' => null,
+            'open' => null
         ];
     }
 

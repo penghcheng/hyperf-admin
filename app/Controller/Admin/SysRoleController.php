@@ -62,4 +62,24 @@ class SysRoleController extends AbstractController
         ]);
     }
 
+    /**
+     * sys/role/save
+     * 保存角色
+     */
+    public function sysRoleSave()
+    {
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $roleName = (string)$this->request->input('roleName');
+        $remark = (string)$this->request->input('remark');
+        $menuIdList = $this->request->input('menuIdList');
+
+        $result = $this->sysUserService->sysRoleSave($userId, $roleName, $remark, $menuIdList);
+        if ($result) {
+            return $this->response->success();
+        } else {
+            return $this->response->error('保存失败');
+        }
+    }
+
 }

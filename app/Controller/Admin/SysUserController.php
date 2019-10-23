@@ -217,6 +217,7 @@ class SysUserController extends AbstractController
      */
     public function sysLogout()
     {
+        $userId = JwtInstance::instance()->build()->getId();
         return $this->response->success();
     }
 }

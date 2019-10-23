@@ -46,13 +46,13 @@ class SysUserController extends AbstractController
 
         $format = SysUserFormatter::instance()->base($sysUser);
 
-        /*if (!password_verify($password, $format['password'])) {
+        if (!password_verify($password, $format['password'])) {
             return $this->response->error("用户名或密码错误.");
         }
 
         if ($format['status'] != 1) {
             return $this->response->error("该用户禁止登陆.");
-        }*/
+        }
 
         $token = JwtInstance::instance()->encode($sysUser);
 

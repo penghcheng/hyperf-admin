@@ -70,7 +70,7 @@ class SysUserService extends Service
         /*if (!empty($cache_memunv)) {
             return json_decode($cache_memunv, true);
         }*/
-        
+
         if ($user_id != 1) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
             $role_ids = $role_ids->toArray();
@@ -141,20 +141,23 @@ class SysUserService extends Service
 
 
     /**
-     * 获取Menu列表根据用户的权限
+     * 获取Menu列表
      * @param int $user_id
      * @return array
      */
     public function getSysNemuList(int $user_id):array
     {
 
-        if ($user_id != 1) {
+        /*if ($user_id != 1) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
             $role_ids = $role_ids->toArray();
             $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (" . implode(',', $role_ids) . ");");
         } else {
             $datas = Db::select('SELECT * FROM sys_menu;');
-        }
+        }*/
+
+        $datas = Db::select('SELECT * FROM sys_menu;');
+
         if(empty($datas)){
             return [];
         }

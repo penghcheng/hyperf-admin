@@ -14,7 +14,7 @@ class SysMenuFormatter extends Formatter
         return [
             'menuId' => $model->menu_id,
             'parentId' => $model->parent_id,
-            'parentName' => null,
+            'parentName' => $model['parentName'] ?? null,
             'name' => $model->name,
             'url' => $model->url,
             'perms' => $model->perms,
@@ -32,7 +32,7 @@ class SysMenuFormatter extends Formatter
         return [
             'menuId' => $model['menu_id'],
             'parentId' => $model['parent_id'],
-            'parentName' => null,
+            'parentName' => $model['parentName'] ?? null,
             'name' => $model['name'],
             'url' => $model['url'],
             'perms' => $model['perms'],
@@ -43,6 +43,16 @@ class SysMenuFormatter extends Formatter
             'list' => null,
             'open' => null
         ];
+    }
+
+    public function arrayFormat($models)
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $item = self::forArray($model);
+            $result[] = $item;
+        }
+        return $result;
     }
 
     public function collectionFormat($models)

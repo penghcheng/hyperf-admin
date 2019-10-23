@@ -44,4 +44,19 @@ class SysMenuController extends AbstractController
         ]);
     }
 
+
+    /**
+     * /sys/menu/list
+     * 获取Menu列表根据用户的权限
+     */
+    public function sysMenuList()
+    {
+
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $result = $this->sysUserService->getSysNemuList($userId);
+
+        return $this->response->json($result);
+    }
+
 }

@@ -90,7 +90,7 @@ class SysUserService extends Service
      * @param $menu_ids
      * @return array
      */
-    public function getUserMenusPermissions($menu_ids)
+    private function getUserMenusPermissions($menu_ids)
     {
         $menu_category = Db::select('SELECT * FROM sys_menu where  parent_id = 0 and type = 0 and menu_id in (' . implode(',', $menu_ids) . ') order by order_num asc;');
 
@@ -136,6 +136,35 @@ class SysUserService extends Service
         }
 
         return [$menuList, $permArrays];
+    }
+
+
+    /**
+     * 获取Menu列表根据用户的权限
+     * @param int $user_id
+     * @return array
+     */
+    public function getSysNemuList(int $user_id):array
+    {
+
+        if ($user_id != 1) {
+            $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
+            $role_ids = $role_ids->toArray();
+            $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (" . implode(',', $role_ids) . ");");
+        } else {
+            $datas = Db::select('SELECT * FROM sys_menu;');
+        }
+        if(empty($datas)){
+            return [];
+        }
+
+        $menu_ids = array_column($datas, 'menu_id');
+        $menu_ids = array_unique($menu_ids);
+
+        $sys_menus = Db::select("SELECT s1.*,s2.name as parentName FROM sys_menu s1 LEFT JOIN sys_menu s2 ON s1.parent_id = s2.menu_id where s1.menu_id in (" . implode(',', $menu_ids) . ");");
+        $sys_menus = SysMenuFormatter::instance()->arrayFormat($sys_menus);
+
+        return $sys_menus;
     }
 
 

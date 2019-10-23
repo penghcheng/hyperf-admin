@@ -52,6 +52,15 @@ class Response
     }
 
     /**
+     * @param $data
+     * @return PsrResponseInterface
+     */
+    public function json($data)
+    {
+        return $this->response->json($data);
+    }
+
+    /**
      * @param string $message
      * @param int $code
      * @return PsrResponseInterface

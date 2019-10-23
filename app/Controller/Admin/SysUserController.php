@@ -226,4 +226,37 @@ class SysUserController extends AbstractController
     }
 
 
+    /**
+     * 删除管理员
+     * url:sys/user/delete
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sysUserDelete()
+    {
+        $params = $this->request->post();
+
+        if(!is_array($params) || empty($params)){
+            return $this->response->error("提交错误");
+        }
+
+
+        if(in_array("1",$params)){
+            return $this->response->error("超级管理员不能删除");
+        }
+
+        Db::beginTransaction();
+        try{
+
+            Db::table('sys_user')->whereIn("user_id",$params)->delete();
+            Db::table('sys_user_role')->whereIn("user_id",$params)->delete();
+            Db::commit();
+
+            return $this->response->success();
+
+        } catch(\Throwable $ex){
+            Db::rollBack();
+            return $this->response->error("删除失败");
+        }
+
+    }
 }

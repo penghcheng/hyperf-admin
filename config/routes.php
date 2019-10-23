@@ -18,6 +18,7 @@ Router::addGroup('/renren-fast/', function () {
     Router::get('sys/role/select', 'App\Controller\Admin\SysUserController@sysRoleSelect'); // select角色列表
     Router::post('sys/user/save', 'App\Controller\Admin\SysUserController@sysUserSave'); // 保存管理员
     Router::post('sys/user/update', 'App\Controller\Admin\SysUserController@sysUserUpdate'); // update管理员
+    Router::post('sys/user/delete', 'App\Controller\Admin\SysUserController@sysUserDelete'); // 删除管理员
 
 },
     ['middleware' => [App\Middleware\AdminMiddleware::class]]

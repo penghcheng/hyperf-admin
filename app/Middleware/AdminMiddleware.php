@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Constants\Constants;
+use App\Kernel\Http\Response;
 use App\Service\Instance\JwtInstance;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -20,6 +22,12 @@ class AdminMiddleware implements MiddlewareInterface
      */
     protected $container;
 
+    /**
+     * @Inject()
+     * @var Response
+     */
+    private $respone;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -33,12 +41,15 @@ class AdminMiddleware implements MiddlewareInterface
 
         $uri = $request->getRequestUri();
         $urIs = explode('/', $uri);
-        if(count($urIs)>=5){
+
+        $perms = ""; // 权限标识
+        if (count($urIs) >= 5) {
             $perms = $urIs[2] . ":" . $urIs[3] . ":" . $urIs[4];
-        }else{
+        } else {
             $perms = $urIs[2] . ":" . $urIs[3];
         }
-        var_dump($perms);
+
+        echo "perms:" . $perms . '-' . date("Y-m-d h:i:s") . PHP_EOL;
 
         if (!empty($token)) {
             JwtInstance::instance()->decode($token);

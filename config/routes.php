@@ -14,6 +14,10 @@ Router::addGroup('/renren-fast/', function () {
     Router::get('sys/menu/list', 'App\Controller\Admin\SysMenuController@sysMenuList'); // 获取Menu列表
     Router::get('sys/user/info', 'App\Controller\Admin\SysUserController@getInfoByLoginUserId'); // 登录的用户信息
     Router::get('sys/menu/select', 'App\Controller\Admin\SysMenuController@sysMenuSelect'); // 选择Menu列表
+    Router::post('sys/menu/save', 'App\Controller\Admin\SysMenuController@sysMenuSave'); // 保存Menu
+    Router::get('sys/menu/info/{id:\d+}', 'App\Controller\Admin\SysMenuController@sysMenuInfo'); // 获取某个菜单信息
+    Router::post('sys/menu/update', 'App\Controller\Admin\SysMenuController@sysMenuUpdate'); // 更新Menu
+    Router::post('sys/menu/delete/{id:\d+}', 'App\Controller\Admin\SysMenuController@sysMenuDelete'); // 更新Menu
 
     Router::get('sys/user/info/{id:\d+}', 'App\Controller\Admin\SysUserController@getInfoByUserId'); // 获取用户信息
     Router::get('sys/user/list', 'App\Controller\Admin\SysUserController@sysUserList'); // 管理员用户列表
@@ -28,7 +32,7 @@ Router::addGroup('/renren-fast/', function () {
     Router::post('sys/role/update', 'App\Controller\Admin\SysRoleController@sysRoleUpdate'); // 更新角色
     Router::post('sys/role/delete', 'App\Controller\Admin\SysRoleController@sysRoleDelete'); // 删除角色
 
-    Router::get('sys/logout', 'App\Controller\Admin\SysUserController@sysLogout'); // 退出登录
+    Router::post('sys/logout', 'App\Controller\Admin\SysUserController@sysLogout'); // 退出登录
 
 },
     ['middleware' => [App\Middleware\AdminMiddleware::class]]

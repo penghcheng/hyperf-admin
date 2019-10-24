@@ -203,7 +203,7 @@ class SysUserService extends Service
             "list" => null
         ];
 
-        $sys_menus []= $topMenu;
+        $sys_menus [] = $topMenu;
 
         return $sys_menus;
     }
@@ -557,6 +557,64 @@ class SysUserService extends Service
                 Db::table('sys_role')->whereIn("role_id", $role_ids)->where("create_user_id", $userId)->delete();
                 Db::table('sys_role_menu')->whereIn("role_id", $role_ids)->delete();
             }
+
+            Db::commit();
+            return true;
+
+        } catch (\Throwable $ex) {
+            Db::rollBack();
+            return false;
+        }
+    }
+
+    /**
+     * 保存菜单
+     * @param array $params
+     * @return int
+     */
+    public function sysNemuSave(array $params)
+    {
+        return Db::table('sys_menu')->insertGetId($params);
+    }
+
+
+    /**
+     * 获取条菜单记录
+     * @param $id
+     * @return array|null
+     */
+    public function getSysMenuInfo($id): ?array
+    {
+        $model = Db::table('sys_menu')->where('menu_id', $id)->first();
+        return !empty($model) ? SysMenuFormatter::instance()->forArray($model) : null;
+    }
+
+
+    /**
+     * 更新菜单
+     * @param array $params
+     * @return int
+     */
+    public function sysNemuUpdate(array $params)
+    {
+        return Db::table('sys_menu')->where("menu_id", $params['menu_id'])->update($params);
+    }
+
+    /**
+     * 删除菜单
+     * @param $id
+     * @return int
+     */
+    public function getSysMenuDelete($id)
+    {
+        $hasParent = Db::table('sys_menu')->where('parent_id', $id)->first();
+        if (!empty($hasParent)) {
+            return -1;
+        }
+        Db::beginTransaction();
+        try {
+            Db::table('sys_menu')->where('menu_id', $id)->delete();
+            Db::table('sys_role_menu')->where('menu_id', $id)->delete();
 
             Db::commit();
             return true;

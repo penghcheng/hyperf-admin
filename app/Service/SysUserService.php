@@ -165,8 +165,45 @@ class SysUserService extends Service
         $menu_ids = array_column($datas, 'menu_id');
         $menu_ids = array_unique($menu_ids);
 
-        $sys_menus = Db::select("SELECT s1.*,s2.name as parentName FROM sys_menu s1 LEFT JOIN sys_menu s2 ON s1.parent_id = s2.menu_id where s1.menu_id in (" . implode(',', $menu_ids) . ");");
+        $sys_menus = Db::select("SELECT s1.*,s2.name as parentName FROM sys_menu s1 LEFT JOIN sys_menu s2 ON s1.parent_id = s2.menu_id where s1.menu_id in (" . implode(',', $menu_ids) . ") order by s1.order_num ASC ;");
         $sys_menus = SysMenuFormatter::instance()->arrayFormat($sys_menus);
+
+        return $sys_menus;
+    }
+
+
+    /**
+     * 获取顶级和一级的菜单
+     * @return array
+     */
+    public function getSysNemuSelect()
+    {
+        $datas = Db::select('SELECT * FROM sys_menu where parent_id in (0,1) order by order_num ASC ;');
+
+        if (empty($datas)) {
+            return [];
+        }
+        $menu_ids = array_column($datas, 'menu_id');
+        $menu_ids = array_unique($menu_ids);
+
+        $sys_menus = Db::select("SELECT s1.*,s2.name as parentName FROM sys_menu s1 LEFT JOIN sys_menu s2 ON s1.parent_id = s2.menu_id where s1.menu_id in (" . implode(',', $menu_ids) . ") order by s1.order_num ASC ;");
+        $sys_menus = SysMenuFormatter::instance()->arrayFormat($sys_menus);
+
+        $topMenu = [
+            "menuId" => 0,
+            "parentId" => -1,
+            "parentName" => null,
+            "name" => "一级菜单",
+            "url" => null,
+            "perms" => null,
+            "type" => null,
+            "icon" => null,
+            "orderNum" => null,
+            "open" => true,
+            "list" => null
+        ];
+
+        $sys_menus []= $topMenu;
 
         return $sys_menus;
     }
@@ -529,5 +566,6 @@ class SysUserService extends Service
             return false;
         }
     }
+
 
 }

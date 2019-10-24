@@ -59,4 +59,19 @@ class SysMenuController extends AbstractController
         return $this->response->json($result);
     }
 
+
+    /**
+     * /sys/menu/select
+     * 选择Menu列表
+     */
+    public function sysMenuSelect()
+    {
+        $userId = JwtInstance::instance()->build()->getId();
+        $result = $this->sysUserService->getSysNemuSelect();
+
+        return $this->response->success([
+            'menuList' => $result
+        ]);
+    }
+
 }

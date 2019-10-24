@@ -6,9 +6,9 @@ use Hyperf\HttpServer\Router\Router;
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
 
-Router::post('/renren-fast/sys/login', 'App\Controller\Admin\SysUserController@login'); //管理员登录
+Router::post('/hy-admin/sys/login', 'App\Controller\Admin\SysUserController@login'); //管理员登录
 
-Router::addGroup('/renren-fast/', function () {
+Router::addGroup('/hy-admin/', function () {
 
     Router::get('sys/menu/nav', 'App\Controller\Admin\SysMenuController@sysMenuNav'); // 登录用户的菜单和权限
     Router::get('sys/menu/list', 'App\Controller\Admin\SysMenuController@sysMenuList'); // 获取Menu列表

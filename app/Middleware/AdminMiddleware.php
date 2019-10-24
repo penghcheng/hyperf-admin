@@ -33,8 +33,11 @@ class AdminMiddleware implements MiddlewareInterface
 
         $uri = $request->getRequestUri();
         $urIs = explode('/', $uri);
-        $perms = $urIs[2] . ":" . $urIs[3] . ":" . $urIs[4];
-
+        if(count($urIs)>=5){
+            $perms = $urIs[2] . ":" . $urIs[3] . ":" . $urIs[4];
+        }else{
+            $perms = $urIs[2] . ":" . $urIs[3];
+        }
         var_dump($perms);
 
         if (!empty($token)) {

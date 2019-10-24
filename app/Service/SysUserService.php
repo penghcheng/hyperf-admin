@@ -463,4 +463,71 @@ class SysUserService extends Service
         }
     }
 
+
+    /**
+     * 管理员删除
+     * @param array $params
+     * @param $userId
+     * @return bool|null
+     */
+    public function sysUserDelete(array $params, $userId): ?bool
+    {
+        Db::beginTransaction();
+        try {
+            if ($userId == 1) {
+
+                Db::table('sys_user')->whereIn("user_id", $params)->delete();
+                Db::table('sys_user_role')->whereIn("user_id", $params)->delete();
+
+            } else {
+
+                $user_ids = Db::table('sys_user')->whereIn("user_id", $params)->where("create_user_id", $userId)->pluck("user_id");
+
+                Db::table('sys_user')->whereIn("user_id", $user_ids)->where("create_user_id", $userId)->delete();
+                Db::table('sys_user_role')->whereIn("user_id", $user_ids)->delete();
+            }
+
+
+            Db::commit();
+            return true;
+
+        } catch (\Throwable $ex) {
+            Db::rollBack();
+            return false;
+        }
+
+    }
+
+    /**
+     * 删除角色
+     * @param array $params
+     * @param $userId
+     * @return bool
+     */
+    public function sysRoleDelete(array $params, $userId)
+    {
+
+        Db::beginTransaction();
+        try {
+            if ($userId == 1) {
+
+                Db::table('sys_role')->whereIn("role_id", $params)->delete();
+                Db::table('sys_role_menu')->whereIn("role_id", $params)->delete();
+
+            } else {
+                $role_ids = Db::table('sys_role')->whereIn("role_id", $params)->where("create_user_id", $userId)->pluck("role_id");
+
+                Db::table('sys_role')->whereIn("role_id", $role_ids)->where("create_user_id", $userId)->delete();
+                Db::table('sys_role_menu')->whereIn("role_id", $role_ids)->delete();
+            }
+
+            Db::commit();
+            return true;
+
+        } catch (\Throwable $ex) {
+            Db::rollBack();
+            return false;
+        }
+    }
+
 }

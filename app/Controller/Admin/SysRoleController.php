@@ -123,4 +123,30 @@ class SysRoleController extends AbstractController
         }
     }
 
+
+    /**
+     * 删除角色
+     * url:sys/role/delete
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sysRoleDelete()
+    {
+
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $params = $this->request->post();
+
+        if (!is_array($params) || empty($params)) {
+            return $this->response->error("提交错误");
+        }
+
+        $result = $this->sysUserService->sysRoleDelete($params,$userId);
+
+        if ($result) {
+            return $this->response->success();
+        } else {
+            return $this->response->error("删除失败");
+        }
+    }
+
 }

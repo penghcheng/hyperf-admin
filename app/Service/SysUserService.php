@@ -359,9 +359,11 @@ class SysUserService extends Service
      * @param string $roleName
      * @param $remark
      * @param array $menuIdList
+     * @param string $flag
+     * @param int $roleId
      * @return bool|null
      */
-    public function sysRoleSave(int $userId, string $roleName, $remark, array $menuIdList): ?bool
+    public function sysRoleSave(int $userId, string $roleName, $remark, array $menuIdList, string $flag = 'add', $roleId = 0): ?bool
     {
         if ($userId != 1) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $userId)->pluck('role_id');
@@ -374,30 +376,91 @@ class SysUserService extends Service
         $menu_ids = array_unique($menu_ids);
 
         $menu_diffs = array_diff($menu_ids, $menuIdList);
+        $menu_diffs = array_values($menu_diffs); //重建数组下标0开始
 
         // 保存的权限大于当前用户的权限就抛出异常
         if (!empty($menu_diffs) && in_array($menu_diffs[0], $menuIdList)) {
             throw new BusinessException(ErrorCode::USER_INVALID);
         }
 
-        Db::beginTransaction();
-        try {
-            $id = Db::table('sys_role')->insertGetId(
-                ['role_name' => $roleName, 'remark' => $remark,'create_user_id' => $userId,'create_time'=> date("Y-m-d h:i:s")]
-            );
-            $role_menus=[];
-            foreach ($menuIdList as $value){
-                $role_menus[]=['role_id' => $id, 'menu_id' => $value];
+        if ($flag == 'add') { // 新增角色
+            Db::beginTransaction();
+            try {
+                $id = Db::table('sys_role')->insertGetId(
+                    ['role_name' => $roleName, 'remark' => $remark, 'create_user_id' => $userId, 'create_time' => date("Y-m-d h:i:s")]
+                );
+                $role_menus = [];
+                foreach ($menuIdList as $value) {
+                    $role_menus[] = ['role_id' => $id, 'menu_id' => $value];
+                }
+                Db::table('sys_role_menu')->insert($role_menus);
+                Db::commit();
+                return true;
+
+            } catch (\Throwable $ex) {
+                Db::rollBack();
+                return false;
             }
-            Db::table('sys_role_menu')->insert($role_menus);
-            Db::commit();
 
-            return true;
-        } catch (\Throwable $ex) {
-            Db::rollBack();
-            return false;
+        } else { // 更新角色
+
+            Db::beginTransaction();
+            try {
+
+                Db::table('sys_role')->where('role_id', $roleId)->update(['role_name' => $roleName, 'remark' => $remark]);
+
+                if ((!empty($menu_diffs) && !in_array($menu_diffs[0], $menu_ids))) {
+                    throw new BusinessException(ErrorCode::USER_INVALID);
+                }
+
+                // 获取当前角色的menu_id
+                $currentMenuIds = Db::table('sys_role_menu')->where("role_id", $roleId)->pluck('menu_id');
+                $currentMenuIds = $currentMenuIds->toArray();
+                // 对比当前和提交的菜单的差集
+                if (empty(array_diff($currentMenuIds, $menuIdList))) {
+                    Db::commit();
+                    return true;
+                }
+
+                Db::table('sys_role_menu')->where('role_id', $roleId)->delete();
+                $role_menus = [];
+                foreach ($menuIdList as $value) {
+                    $role_menus[] = ['role_id' => $roleId, 'menu_id' => $value];
+                }
+
+                Db::table('sys_role_menu')->insert($role_menus);
+                Db::commit();
+                return true;
+
+            } catch (\Throwable $ex) {
+                Db::rollBack();
+                return false;
+            }
         }
+    }
 
+
+    /**
+     * 获取角色信息
+     * @param $role_id
+     * @return array
+     */
+    public function getSysRoleInfo($role_id): array
+    {
+
+        try {
+
+            $datas = Db::select("SELECT * FROM sys_role_menu where role_id = " . $role_id . ";");
+            $menu_ids = array_column($datas, 'menu_id');
+            $menu_ids = array_unique($menu_ids);
+
+            $model = $this->sysRoleDao->first($role_id);
+            $model->menuIdList = $menu_ids;
+            return SysRoleFormatter::instance()->base($model);
+
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
 }

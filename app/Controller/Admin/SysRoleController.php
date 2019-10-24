@@ -64,7 +64,7 @@ class SysRoleController extends AbstractController
 
     /**
      * sys/role/save
-     * 保存角色
+     * 新增角色
      */
     public function sysRoleSave()
     {
@@ -75,6 +75,47 @@ class SysRoleController extends AbstractController
         $menuIdList = $this->request->input('menuIdList');
 
         $result = $this->sysUserService->sysRoleSave($userId, $roleName, $remark, $menuIdList);
+        if ($result) {
+            return $this->response->success();
+        } else {
+            return $this->response->error('保存失败');
+        }
+    }
+
+
+    /**
+     * sys/role/info/{id:\d+}
+     * 获取角色信息
+     */
+    public function sysRoleInfo($id)
+    {
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $result = $this->sysUserService->getSysRoleInfo($id);
+
+        if ($result) {
+            return $this->response->success(['role' => $result]);
+        } else {
+            return $this->response->error('保存失败');
+        }
+    }
+
+    /**
+     * sys/role/update
+     * update角色管理
+     */
+    public function sysRoleUpdate()
+    {
+
+        $userId = JwtInstance::instance()->build()->getId();
+
+        $roleId = (int)$this->request->input('roleId');
+        $roleName = (string)$this->request->input('roleName');
+        $remark = (string)$this->request->input('remark');
+        $menuIdList = $this->request->input('menuIdList');
+
+        $result = $this->sysUserService->sysRoleSave($userId, $roleName, $remark, $menuIdList,'update',$roleId);
+
         if ($result) {
             return $this->response->success();
         } else {

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Service\Formatter;
 
-use App\Model\SysUser;
+use App\Model\SysRole;
 
 class SysRoleFormatter extends Formatter
 {
-    public function base(SysUser $model)
+    public function base(SysRole $model)
     {
         return [
             'roleId' => $model->role_id,
             'roleName' => $model->role_name,
             'remark' => $model->remark,
-            'menuIdList' => null,
+            'menuIdList' => $model->menuIdList ?? null,
             'createUserId' => $model->create_user_id,
             'createTime' => $model->create_time
         ];
@@ -26,9 +26,9 @@ class SysRoleFormatter extends Formatter
             'roleId' => $model['role_id'],
             'roleName' => $model['role_name'],
             'remark' => $model['remark'],
-            'menuIdList' => null,
+            'menuIdList' => $model['menuIdList'] ?? null,
             'createUserId' => $model['create_user_id'],
-            'createTime' => $model['create_time'],
+            'createTime' => $model['create_time']
         ];
     }
 

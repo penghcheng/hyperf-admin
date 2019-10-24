@@ -22,9 +22,11 @@ Router::addGroup('/renren-fast/', function () {
 
     Router::get('sys/role/list', 'App\Controller\Admin\SysRoleController@sysRoleList'); // 角色管理列表
     Router::get('sys/role/select', 'App\Controller\Admin\SysRoleController@sysRoleSelect'); // select角色列表
-    Router::post('sys/role/save', 'App\Controller\Admin\SysRoleController@sysRoleSave'); // 保存角色
+    Router::post('sys/role/save', 'App\Controller\Admin\SysRoleController@sysRoleSave'); // 新增角色
+    Router::get('sys/role/info/{id:\d+}', 'App\Controller\Admin\SysRoleController@sysRoleInfo'); // 获取角色信息
+    Router::post('sys/role/update', 'App\Controller\Admin\SysRoleController@sysRoleUpdate'); // 更新角色
 
-    Router::post('sys/logout', 'App\Controller\Admin\SysUserController@sysLogout'); // 退出登录
+    Router::get('sys/logout', 'App\Controller\Admin\SysUserController@sysLogout'); // 退出登录
 
 },
     ['middleware' => [App\Middleware\AdminMiddleware::class]]

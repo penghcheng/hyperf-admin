@@ -17,4 +17,6 @@ class Constants
     const X_TOKEN = 'X-Token';
 
     const TOKEN = 'token';
+
+    const PERMISSION_DENIED = 'Permission denied';
 }

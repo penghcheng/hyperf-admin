@@ -7,6 +7,7 @@ namespace App\Middleware;
 use App\Constants\Constants;
 use App\Kernel\Http\Response;
 use App\Service\Instance\JwtInstance;
+use App\Service\SysUserService;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
@@ -35,6 +36,12 @@ class AdminMiddleware implements MiddlewareInterface
      */
     protected $logger;
 
+    /**
+     * @Inject
+     * @var SysUserService
+     */
+    protected $sysUserService;
+
 
     public function __construct(ContainerInterface $container)
     {
@@ -51,10 +58,9 @@ class AdminMiddleware implements MiddlewareInterface
         $uri = $request->getRequestUri();
         $urIs = explode('/', $uri);
 
+        $perms = null;
         if (count($urIs) >= 5) { // 权限标识
             $perms = $urIs[2] . ":" . $urIs[3] . ":" . $urIs[4];
-        } else {
-            $perms = $urIs[2] . ":" . $urIs[3];
         }
 
         $this->logger->notice(PHP_EOL . 'TIME:' . date("Y-m-d h:i:s") . PHP_EOL . "PERMS:" . $perms . PHP_EOL . "IP:" . $request->getServerParams()["remote_addr"]);
@@ -73,6 +79,20 @@ class AdminMiddleware implements MiddlewareInterface
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
             return $this->respone->error($e->getMessage());
+        }
+
+        $accessUserId = JwtInstance::instance()->build()->getId();
+
+        if ($accessUserId != 1) {
+            
+            [$menuList, $permissions] = $this->sysUserService->getNemuNav($accessUserId);
+
+            if (!empty($perms)) {
+                // 没有访问权限
+                if (!in_array($perms, $permissions)) {
+                    return $this->respone->error(Constants::PERMISSION_DENIED);
+                }
+            }
         }
 
         return $handler->handle($request);

@@ -67,11 +67,11 @@ class SysUserService extends Service
         $redis = $container->get(\Redis::class);
 
         $app_name = env('APP_NAME');
-        $cache_memunv = $redis->get($app_name . "_menu_nav:" . $user_id);
+        $cacheMenuNav = $redis->get($app_name . "_menu_nav:" . $user_id);
 
-        /*if (!empty($cache_memunv)) {
-            return json_decode($cache_memunv, true);
-        }*/
+        if (!empty($cacheMenuNav)) {
+            return json_decode($cacheMenuNav, true);
+        }
 
         if ($user_id != 1) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
@@ -81,9 +81,9 @@ class SysUserService extends Service
             $datas = Db::select('SELECT * FROM sys_menu;');
         }
         $menu_ids = array_column($datas, 'menu_id');
-        $result = $this->getUserMenusPermissions($menu_ids, $user_id);
+        $result = $this->getUserMenusPermissions($menu_ids);
 
-        $redis->set($app_name . "_menu_nav:" . $user_id, json_encode($result), 5); //暂时设置5秒
+        $redis->set($app_name . "_menu_nav:" . $user_id, json_encode($result), 60); //暂时设置60秒
         return $result;
     }
 

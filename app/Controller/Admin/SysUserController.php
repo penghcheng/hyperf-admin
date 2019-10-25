@@ -42,25 +42,30 @@ class SysUserController extends AbstractController
         $username = (string)$this->request->input('username');
         $password = (string)$this->request->input('password');
 
-        $sysUser = ApplicationContext::getContainer()->get(SysUserDao::class)->getOne($username);
+        try {
 
-        $format = SysUserFormatter::instance()->base($sysUser);
+            $sysUser = ApplicationContext::getContainer()->get(SysUserDao::class)->getOne($username);
 
-        if (!password_verify($password, $format['password'])) {
-            return $this->response->error("用户名或密码错误.");
+            $format = SysUserFormatter::instance()->base($sysUser);
+
+            if (!password_verify($password, $format['password'])) {
+                return $this->response->error("用户名或密码错误");
+            }
+
+            if ($format['status'] != 1) {
+                return $this->response->error("该用户禁止登陆");
+            }
+
+            $token = JwtInstance::instance()->encode($sysUser);
+
+            return $this->response->success([
+                'token' => $token,
+                'expire' => 43200
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->response->error("用户名或密码错误");
         }
-
-        if ($format['status'] != 1) {
-            return $this->response->error("该用户禁止登陆.");
-        }
-
-        $token = JwtInstance::instance()->encode($sysUser);
-
-        return $this->response->success([
-            'token' => $token,
-            'expire' => 43200
-        ]);
-
     }
 
 
@@ -197,7 +202,7 @@ class SysUserController extends AbstractController
             return $this->response->error("超级管理员不能删除");
         }
 
-        $result = $this->sysUserService->sysUserDelete($params,$userId);
+        $result = $this->sysUserService->sysUserDelete($params, $userId);
 
         if ($result) {
             return $this->response->success();

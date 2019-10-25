@@ -83,13 +83,17 @@ class AdminMiddleware implements MiddlewareInterface
 
         $accessUserId = JwtInstance::instance()->build()->getId();
 
+        $allowPermissions = [
+            'sys:menu:nav'
+        ];
+
         if ($accessUserId != 1) {
 
             [$menuList, $permissions] = $this->sysUserService->getNemuNav($accessUserId);
 
             if (!empty($perms)) {
                 // 没有访问权限
-                if (!in_array($perms, $permissions)) {
+                if (!in_array($perms,$allowPermissions) && !in_array($perms, $permissions)) {
                     return $this->respone->error(Constants::PERMISSION_DENIED);
                 }
             }

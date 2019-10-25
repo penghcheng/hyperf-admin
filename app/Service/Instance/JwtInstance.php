@@ -46,7 +46,8 @@ class JwtInstance
         try {
             $decoded = (array)JWT::decode($token, self::KEY, ['HS256']);
         } catch (\Throwable $exception) {
-            return $this;
+            throw new BusinessException(ErrorCode::SERVER_ERROR, $exception->getMessage());
+            //return $this;
         }
         if ($decoded['expire'] < time()) {
             throw new BusinessException(ErrorCode::TOKEN_INVALID);

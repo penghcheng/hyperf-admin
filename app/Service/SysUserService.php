@@ -362,6 +362,10 @@ class SysUserService extends Service
 
             // 更新管理员
 
+            if($createUserId == $updateUserId && $status ==0 ){
+                return false;
+            }
+
             $update = [
                 'username' => $username,
                 'email' => $email,
@@ -395,8 +399,6 @@ class SysUserService extends Service
 
             return true;
         }
-
-        return false;
     }
 
 

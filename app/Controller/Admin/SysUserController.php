@@ -162,7 +162,7 @@ class SysUserController extends AbstractController
     public function sysUserUpdate()
     {
 
-        JwtInstance::instance()->build()->getId();
+        $currentLoginUserId=JwtInstance::instance()->build()->getId();
 
         $username = (string)$this->request->input('username');
         $password = (string)$this->request->input('password');
@@ -173,7 +173,12 @@ class SysUserController extends AbstractController
         $status = (int)$this->request->input('status');
         $userId = (int)$this->request->input('userId');
 
-        $result = $this->sysUserService->sysUserSave($username, $password, $email, $mobile, $roleIdList, $salt, $status, null, $userId);
+        $result = $this->sysUserService->sysUserSave($username, $password, $email, $mobile, $roleIdList, $salt, $status, $currentLoginUserId, $userId);
+
+        if($result == false && $status == 0 && ($currentLoginUserId == $userId) ){
+            return $this->response->error("不能禁用当前登录用户");
+        }
+
         if ($result) {
             return $this->response->success();
         } else {

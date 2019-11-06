@@ -247,7 +247,7 @@ class SysUserService extends Service
             $where .= " and a.username like '%" . $username . "%'";
         }
 
-        $sysUsers = Db::select("SELECT * FROM sys_user a JOIN (select user_id from sys_user limit " . $startCount . ", " . $pageSize . ") b ON a.user_id = b.user_id where " . $where . ";");
+        $sysUsers = Db::select("SELECT * FROM sys_user a JOIN (select user_id from sys_user order by user_id desc limit " . $startCount . ", " . $pageSize . ") b ON a.user_id = b.user_id where " . $where . " order by b.user_id desc;");
 
         if (!empty($sysUsers)) {
             $sysUsers = SysUserFormatter::instance()->arrayFormat($sysUsers);
@@ -294,7 +294,7 @@ class SysUserService extends Service
             $where .= " and a.role_name like '%" . $roleName . "%'";
         }
 
-        $sysRoles = Db::select("SELECT * FROM sys_role a JOIN (select role_id from sys_role limit " . $startCount . ", " . $pageSize . ") b ON a.role_id = b.role_id where " . $where . ";");
+        $sysRoles = Db::select("SELECT * FROM sys_role a JOIN (select role_id from sys_role order by role_id desc limit " . $startCount . ", " . $pageSize . ") b ON a.role_id = b.role_id where " . $where . " order by b.role_id desc;");
 
         if (!empty($sysRoles)) {
             $sysRoles = SysRoleFormatter::instance()->arrayFormat($sysRoles);
@@ -362,7 +362,7 @@ class SysUserService extends Service
 
             // 更新管理员
 
-            if($createUserId == $updateUserId && $status ==0 ){
+            if ($createUserId == $updateUserId && $status == 0) {
                 return false;
             }
 

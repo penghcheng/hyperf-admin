@@ -220,6 +220,9 @@ class SysUserService extends Service
     /**
      * 管理员管理list
      * @param int $user_id
+     * @param string $username
+     * @param int $pageSize
+     * @param int $currPage
      * @return array
      */
     public function getSysUserList(int $user_id, string $username, int $pageSize = 10, int $currPage = 1): array
@@ -267,6 +270,9 @@ class SysUserService extends Service
     /**
      * 角色管理list
      * @param int $user_id
+     * @param string $roleName
+     * @param int $pageSize
+     * @param int $currPage
      * @return array
      */
     public function getSysRoleList(int $user_id, string $roleName, int $pageSize = 10, int $currPage = 1): array

@@ -24,7 +24,8 @@ class IndexController extends AbstractController
 
         return $this->response->success([
             'method' => $method,
-            'message' => "Hello {$user}."
+            'data' => "Hello {$user}.",
+            "ip" => $this->request->getServerParams()["remote_addr"]
         ]);
     }
 }

@@ -24,6 +24,7 @@ Router::addGroup('/hy-admin/', function () {
     Router::post('sys/user/save', 'App\Controller\Admin\SysUserController@sysUserSave'); // 保存管理员
     Router::post('sys/user/update', 'App\Controller\Admin\SysUserController@sysUserUpdate'); // update管理员
     Router::post('sys/user/delete', 'App\Controller\Admin\SysUserController@sysUserDelete'); // 删除管理员
+    Router::post('sys/user/password', 'App\Controller\Admin\SysUserController@password'); // 修改密码
 
     Router::get('sys/role/list', 'App\Controller\Admin\SysRoleController@sysRoleList'); // 角色管理列表
     Router::get('sys/role/select', 'App\Controller\Admin\SysRoleController@sysRoleSelect'); // select角色列表

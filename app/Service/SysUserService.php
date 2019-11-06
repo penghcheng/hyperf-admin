@@ -69,9 +69,9 @@ class SysUserService extends Service
         $app_name = env('APP_NAME');
         $cacheMenuNav = $redis->get($app_name . "_menu_nav:" . $user_id);
 
-        if (!empty($cacheMenuNav)) {
+        /*if (!empty($cacheMenuNav)) {
             return json_decode($cacheMenuNav, true);
-        }
+        }*/
 
         if ($user_id != 1) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
@@ -137,6 +137,14 @@ class SysUserService extends Service
         foreach ($permissions as $key => $val) {
             $permArrays[] = $val;
         }
+
+        // 默认存在的权限
+        $allowPermissions = [
+            'sys:menu:nav',
+            'sys:user:info',
+            'sys:user:password'
+        ];
+        $permArrays = array_merge($permArrays, $allowPermissions);
 
         return [$menuList, $permArrays];
     }
@@ -367,10 +375,12 @@ class SysUserService extends Service
             }
 
             Db::table('sys_user')->where("user_id", $updateUserId)->update($update);
-            Db::table('sys_user_role')->where("user_id", $updateUserId)->delete();
 
             $roles = [];
             if (!empty($roleIdList) && !empty($updateUserId)) {
+
+                Db::table('sys_user_role')->where("user_id", $updateUserId)->delete();
+
                 foreach ($roleIdList as $value) {
                     $roles[] = [
                         'user_id' => $updateUserId,

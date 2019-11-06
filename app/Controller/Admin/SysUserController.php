@@ -213,6 +213,37 @@ class SysUserController extends AbstractController
 
 
     /**
+     * sys/user/password
+     * 修改密码
+     */
+    public function password()
+    {
+        $userId = JwtInstance::instance()->build()->getId();
+        $sysUser = JwtInstance::instance()->build()->getSysUser();
+
+        $params = $this->request->post();
+
+        if (!is_array($params) || empty($params)) {
+            return $this->response->error("提交错误");
+        }
+
+        $format = SysUserFormatter::instance()->base($sysUser);
+
+        if (!password_verify($params['password'], $format['password'])) {
+            return $this->response->error("原密码错误");
+        }
+
+        $result = $this->sysUserService->sysUserSave($format['username'], trim($params['newPassword']), $format['email'], $format['mobile'], [], "", $format['status'], null, $userId);
+
+        if ($result) {
+            return $this->response->success();
+        } else {
+            return $this->response->error("修改失败");
+        }
+    }
+
+
+    /**
      * sys/logout
      */
     public function sysLogout()

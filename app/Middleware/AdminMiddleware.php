@@ -83,9 +83,7 @@ class AdminMiddleware implements MiddlewareInterface
 
         $accessUserId = JwtInstance::instance()->build()->getId();
 
-        $allowPermissions = [
-            'sys:menu:nav'
-        ];
+        $allowPermissions = [];
 
         if ($accessUserId != 1) {
 

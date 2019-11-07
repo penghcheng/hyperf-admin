@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50728
 File Encoding         : 65001
 
-Date: 2019-10-24 17:54:57
+Date: 2019-11-07 11:25:44
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -137,12 +137,12 @@ CREATE TABLE `sys_menu` (
   `icon` varchar(50) DEFAULT NULL COMMENT '菜单图标',
   `order_num` int(11) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COMMENT='菜单管理';
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COMMENT='菜单管理';
 
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES ('1', '0', '系统管理', null, null, '0', 'system', '0');
+INSERT INTO `sys_menu` VALUES ('1', '0', '系统管理', '', '', '0', 'system', '0');
 INSERT INTO `sys_menu` VALUES ('2', '1', '管理员列表', 'sys/user', null, '1', 'admin', '1');
 INSERT INTO `sys_menu` VALUES ('3', '1', '角色管理', 'sys/role', null, '1', 'role', '2');
 INSERT INTO `sys_menu` VALUES ('4', '1', '菜单管理', 'sys/menu', null, '1', 'menu', '3');
@@ -188,12 +188,13 @@ CREATE TABLE `sys_role` (
   `create_user_id` bigint(20) DEFAULT NULL COMMENT '创建者ID',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='角色';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='角色';
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES ('5', '测试角色', '测试角色', '1', '2019-10-23 15:06:47');
+INSERT INTO `sys_role` VALUES ('6', 'ttck', 'ttck', '1', '2019-10-30 10:59:46');
+INSERT INTO `sys_role` VALUES ('9', '测试', '', '1', '2019-11-06 03:06:38');
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -204,30 +205,23 @@ CREATE TABLE `sys_role_menu` (
   `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID',
   `menu_id` bigint(20) DEFAULT NULL COMMENT '菜单ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=903 DEFAULT CHARSET=utf8mb4 COMMENT='角色与菜单对应关系';
+) ENGINE=InnoDB AUTO_INCREMENT=418 DEFAULT CHARSET=utf8mb4 COMMENT='角色与菜单对应关系';
 
 -- ----------------------------
 -- Records of sys_role_menu
 -- ----------------------------
-INSERT INTO `sys_role_menu` VALUES ('292', '5', '15');
-INSERT INTO `sys_role_menu` VALUES ('293', '5', '16');
-INSERT INTO `sys_role_menu` VALUES ('294', '5', '17');
-INSERT INTO `sys_role_menu` VALUES ('295', '5', '3');
-INSERT INTO `sys_role_menu` VALUES ('296', '5', '19');
-INSERT INTO `sys_role_menu` VALUES ('297', '5', '20');
-INSERT INTO `sys_role_menu` VALUES ('298', '5', '21');
-INSERT INTO `sys_role_menu` VALUES ('299', '5', '22');
-INSERT INTO `sys_role_menu` VALUES ('300', '5', '4');
-INSERT INTO `sys_role_menu` VALUES ('301', '5', '23');
-INSERT INTO `sys_role_menu` VALUES ('302', '5', '24');
-INSERT INTO `sys_role_menu` VALUES ('303', '5', '25');
-INSERT INTO `sys_role_menu` VALUES ('304', '5', '26');
-INSERT INTO `sys_role_menu` VALUES ('315', '5', '27');
-INSERT INTO `sys_role_menu` VALUES ('316', '5', '29');
-INSERT INTO `sys_role_menu` VALUES ('317', '5', '30');
-INSERT INTO `sys_role_menu` VALUES ('318', '5', '-666666');
-INSERT INTO `sys_role_menu` VALUES ('319', '5', '1');
-INSERT INTO `sys_role_menu` VALUES ('320', '5', '2');
+INSERT INTO `sys_role_menu` VALUES ('321', '6', '27');
+INSERT INTO `sys_role_menu` VALUES ('322', '6', '30');
+INSERT INTO `sys_role_menu` VALUES ('323', '6', '29');
+INSERT INTO `sys_role_menu` VALUES ('324', '6', '-666666');
+INSERT INTO `sys_role_menu` VALUES ('325', '6', '1');
+INSERT INTO `sys_role_menu` VALUES ('411', '9', '4');
+INSERT INTO `sys_role_menu` VALUES ('412', '9', '23');
+INSERT INTO `sys_role_menu` VALUES ('413', '9', '24');
+INSERT INTO `sys_role_menu` VALUES ('414', '9', '25');
+INSERT INTO `sys_role_menu` VALUES ('415', '9', '26');
+INSERT INTO `sys_role_menu` VALUES ('416', '9', '-666666');
+INSERT INTO `sys_role_menu` VALUES ('417', '9', '1');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -245,13 +239,22 @@ CREATE TABLE `sys_user` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2y$12$iQngOKbEZTJR3oMmXdp0.eN83D20bLPs/d.03A4/5DTpaQcaERNcq', 'YzcmCZNvbXocrsz9dm8e', 'root@qq.com', '13612345678', '1', '1', '2016-11-11 11:11:11');
-INSERT INTO `sys_user` VALUES ('2', 'test', '$2y$12$j0vNJRyxdRlfTuenypXf9OKzW2YMahNrFI.aUXRiQpEexus.mAfIW', '6pSWAG1NJy5Sy0dw5ODE', 'test@qq.com', '18012345678', '1', '1', '2019-10-18 14:16:01');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2y$12$OmEAmrGDZIgM.wI0O4Jy7.3a5N9Llc0njXetfGUCh2da.5guHKpCK', '', 'root@qq.com', '13612345678', '1', '1', '2016-11-11 11:11:11');
+INSERT INTO `sys_user` VALUES ('12', 'didi', '$2y$12$9z9c7BsY3f9.f0hqVxLmw.YWvvlVsGx769Sq341WK1A.zafNs.Nbm', '', 'didi@didi.com', '13800000000', '1', '1', '2019-10-24 09:43:03');
+INSERT INTO `sys_user` VALUES ('16', '2', '$2y$12$EQTOeZ6w3uyDo97ODv0/O./atkfEju/EWRjV7PckK82ZARNyEF4zq', '', '1234@qq.com', '17671652989', '1', '1', '2019-10-30 10:53:56');
+INSERT INTO `sys_user` VALUES ('29', '11', '$2y$12$hNe8LuRmKUOaeYWKUrdCZud1GiN8Bf47cQcKwPo9gjEaDHNbwAI7.', '', '11@qq.com', '17671656789', '0', '1', '2019-10-30 10:54:25');
+INSERT INTO `sys_user` VALUES ('67', '66', '$2y$12$.EYZ9M1EFupOSjgUwgKIsuaW5Vodbyq1As01zlXcGfN8FMduUMgUK', '', '1213456@qq.com', '17671652987', '1', '1', '2019-10-30 10:55:56');
+INSERT INTO `sys_user` VALUES ('68', 'xsx', '$2y$12$qzMx/tjts.a8LGtT8QkTquYbarFjMMC44T/hD5C5IlSsjfWCyBcFa', '', 'xcv@qq.com', '18776787653', '1', '1', '2019-10-30 10:56:24');
+INSERT INTO `sys_user` VALUES ('69', 'axa', '$2y$12$hMB6AdBX2jyJuTJqh/NqY.Ww.TEqkSzOi.dHg5ZdZN5pkArKNmtgO', '', 'zxc@qq.com', '17671652678', '1', '1', '2019-10-30 10:57:06');
+INSERT INTO `sys_user` VALUES ('70', '989', '$2y$12$3/4sNXQCtAARhZuXhveqk.CQ8Nv5QN.KfC48AJdFTelpQsgMbjw9e', '', '989123@qq.com', '18776892346', '1', '1', '2019-10-30 10:57:36');
+INSERT INTO `sys_user` VALUES ('72', 'qiqi', '$2y$12$nldzWk70a9pFSS6cUoMr.erD4VvmroJR9BmobQtrVU6sES83VTEkO', '', '781548819@qq.com', '15119120668', '1', '1', '2019-11-02 04:21:39');
+INSERT INTO `sys_user` VALUES ('73', 'hello', '$2y$12$w7pYehzmrhFCMw9WCweR5uhu.D5FPaii1HlYj3xhLz5SntSfg2m8y', '', '111111@qq.com', '11111111111', '1', '1', '2019-11-05 11:57:50');
+INSERT INTO `sys_user` VALUES ('74', 'penghcheng', '$2y$12$6UnjmxgqT.E13MjZmqbthe5V6qnamDHltaq83oVfMrRdbHtCuyGCi', '', 'test@qq.com', '19919919909', '1', '1', '2019-11-06 09:51:00');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -262,12 +265,16 @@ CREATE TABLE `sys_user_role` (
   `user_id` bigint(20) DEFAULT NULL COMMENT '用户ID',
   `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='用户与角色对应关系';
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COMMENT='用户与角色对应关系';
 
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES ('17', '2', '5');
+INSERT INTO `sys_user_role` VALUES ('24', '16', '5');
+INSERT INTO `sys_user_role` VALUES ('26', '72', '7');
+INSERT INTO `sys_user_role` VALUES ('31', '12', '5');
+INSERT INTO `sys_user_role` VALUES ('32', '12', '7');
+INSERT INTO `sys_user_role` VALUES ('33', '74', '7');
 
 -- ----------------------------
 -- Table structure for sys_user_token

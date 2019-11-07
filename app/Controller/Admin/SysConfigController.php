@@ -23,6 +23,7 @@ class SysConfigController extends AbstractController
     protected $sysUserService;
 
     /**
+     * 参数列表
      * sys/config/list
      */
     public function sysConfigList()
@@ -38,6 +39,20 @@ class SysConfigController extends AbstractController
         return $this->response->success([
             'page' => $result
         ]);
+    }
+
+    /**
+     * 新增参数
+     * sys/config/save
+     */
+    public function sysConfigSave()
+    {
+        $currentLoginUserId = JwtInstance::instance()->build()->getId();
+        $paramKey = (string)$this->request->input('paramKey');
+        $paramValue = (string)$this->request->input('paramValue');
+        $remark = (string)$this->request->input('remark');
+
+        $result = $this->sysUserService->getSysConfigSave($paramKey, $paramValue, $remark, 0);
     }
 
 }

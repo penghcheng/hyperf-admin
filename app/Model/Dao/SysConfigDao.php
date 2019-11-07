@@ -27,6 +27,15 @@ class SysConfigDao
         return $model;
     }
 
+    public function firstOrNew(array $data)
+    {
+        $model = SysConfig::query()->firstOrNew(['param_key' => $data['param_key']], $data);
+        if (empty($model)) {
+            throw new BusinessException(0, '数据库中已存在该记录');
+        }
+        return $model;
+    }
+
     /**
      * 根据条件获取totalCount
      * @param string $key

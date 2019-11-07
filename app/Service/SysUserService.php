@@ -755,5 +755,17 @@ class SysUserService extends Service
         return $result;
     }
 
+    /**
+     * 保存参数
+     * @param string $paramKey
+     * @param string $paramValue
+     * @param string $remark
+     * @param int $int
+     */
+    public function getSysConfigSave(string $paramKey, string $paramValue, string $remark, int $int)
+    {
 
+
+    }
+    
 }

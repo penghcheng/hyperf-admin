@@ -482,8 +482,9 @@ class SysUserService extends Service
                 // 获取当前角色的menu_id
                 $currentMenuIds = Db::table('sys_role_menu')->where("role_id", $roleId)->pluck('menu_id');
                 $currentMenuIds = $currentMenuIds->toArray();
+
                 // 对比当前和提交的菜单的差集
-                if (empty(array_diff($currentMenuIds, $menuIdList))) {
+                if (json_encode($currentMenuIds,true) == json_encode($menuIdList,true)) {
                     Db::commit();
                     return true;
                 }

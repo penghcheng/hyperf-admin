@@ -11,10 +11,12 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Model\Dao\SysLogDao;
 use App\Model\Dao\SysRoleDao;
 use App\Model\Dao\SysUserDao;
 use App\Model\SysMenu;
 use App\Model\SysUser;
+use App\Service\Formatter\SysLogFormatter;
 use App\Service\Formatter\SysMenuFormatter;
 use App\Service\Formatter\SysRoleFormatter;
 use App\Service\Formatter\SysUserFormatter;
@@ -38,6 +40,13 @@ class SysUserService extends Service
      * @var SysRoleDao
      */
     protected $sysRoleDao;
+
+
+    /**
+     * @Inject()
+     * @var SysLogDao
+     */
+    protected $sysLogDao;
 
 
     /**
@@ -78,7 +87,7 @@ class SysUserService extends Service
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
             $role_ids = $role_ids->toArray();
             $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (" . implode(',', $role_ids) . ");");
-            
+
         } else {
             $datas = Db::select('SELECT * FROM sys_menu;');
         }
@@ -643,6 +652,52 @@ class SysUserService extends Service
             Db::rollBack();
             return false;
         }
+    }
+
+
+    /**
+     * 返回日志管理列表
+     * @param string $key
+     * @param int $pageSize
+     * @param int $currPage
+     * @return array
+     */
+    public function getSysLogList(string $key, int $pageSize = 10, int $currPage = 1): array
+    {
+        $totalCount = $this->sysLogDao->getTotalCount($key);
+
+        if ($totalCount > 0) {
+            $totalPage = ceil($totalCount / $pageSize);
+        } else {
+            $totalPage = 0;
+        }
+
+        if ($currPage <= 0 || $currPage > $totalPage) {
+            $currPage = 1;
+        }
+
+        $startCount = ($currPage - 1) * $pageSize;
+
+        $where = " 1=1 ";
+
+        if (!empty($key)) {
+            $where .= " and a.username like '%" . $key . "%' or  a.operation like '%" . $key . "%'";
+        }
+
+        $sysRoles = Db::select("SELECT * FROM sys_log a JOIN (select id from sys_log order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
+
+        if (!empty($sysRoles)) {
+            $sysRoles = SysLogFormatter::instance()->arrayFormat($sysRoles);
+        }
+
+        $result = [
+            'totalCount' => $totalCount,
+            'pageSize' => $pageSize,
+            'totalPage' => $totalPage,
+            'currPage' => $currPage,
+            'list' => $sysRoles
+        ];
+        return $result;
     }
 
 

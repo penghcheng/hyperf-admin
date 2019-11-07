@@ -33,6 +33,8 @@ Router::addGroup('/hy-admin/', function () {
     Router::post('sys/role/update', 'App\Controller\Admin\SysRoleController@sysRoleUpdate'); // 更新角色
     Router::post('sys/role/delete', 'App\Controller\Admin\SysRoleController@sysRoleDelete'); // 删除角色
 
+    Router::get('sys/log/list', 'App\Controller\Admin\SysLogController@sysLogList'); // 日志列表
+
     Router::post('sys/logout', 'App\Controller\Admin\SysUserController@sysLogout'); // 退出登录
 
 },

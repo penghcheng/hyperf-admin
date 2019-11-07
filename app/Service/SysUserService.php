@@ -92,6 +92,7 @@ class SysUserService extends Service
             $datas = Db::select('SELECT * FROM sys_menu;');
         }
         $menu_ids = array_column($datas, 'menu_id');
+
         $result = $this->getUserMenusPermissions($menu_ids);
 
         $redis->set($app_name . "_menu_nav:" . $user_id, json_encode($result), 60); //暂时设置60秒
@@ -111,9 +112,10 @@ class SysUserService extends Service
         $menuList = [];
         foreach ($menu_category as $key => $value) {
             $model = SysMenu::query()->where("menu_id", $value['menu_id'])->first();
+
             $format = SysMenuFormatter::instance()->base($model);
 
-            $menus = Db::select('SELECT * FROM sys_menu where  parent_id = ' . $format['menuId'] . ' and type = 1 order by order_num asc;');
+            $menus = Db::select('SELECT * FROM sys_menu where  parent_id = ' . $format['menuId'] . ' and menu_id in (' . implode(',', $menu_ids) . ') and type = 1 order by order_num asc;');
 
             $arr = [];
             foreach ($menus as $v) {
@@ -484,7 +486,7 @@ class SysUserService extends Service
                 $currentMenuIds = $currentMenuIds->toArray();
 
                 // 对比当前和提交的菜单的差集
-                if (json_encode($currentMenuIds,true) == json_encode($menuIdList,true)) {
+                if (json_encode($currentMenuIds, true) == json_encode($menuIdList, true)) {
                     Db::commit();
                     return true;
                 }

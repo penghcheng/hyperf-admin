@@ -11,11 +11,13 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Model\Dao\SysConfigDao;
 use App\Model\Dao\SysLogDao;
 use App\Model\Dao\SysRoleDao;
 use App\Model\Dao\SysUserDao;
 use App\Model\SysMenu;
 use App\Model\SysUser;
+use App\Service\Formatter\SysConfigFormatter;
 use App\Service\Formatter\SysLogFormatter;
 use App\Service\Formatter\SysMenuFormatter;
 use App\Service\Formatter\SysRoleFormatter;
@@ -48,6 +50,11 @@ class SysUserService extends Service
      */
     protected $sysLogDao;
 
+    /**
+     * @Inject()
+     * @var SysConfigDao
+     */
+    private $sysConfigDao;
 
     /**
      * 获取系统用户信息
@@ -691,6 +698,51 @@ class SysUserService extends Service
 
         if (!empty($sysRoles)) {
             $sysRoles = SysLogFormatter::instance()->arrayFormat($sysRoles);
+        }
+
+        $result = [
+            'totalCount' => $totalCount,
+            'pageSize' => $pageSize,
+            'totalPage' => $totalPage,
+            'currPage' => $currPage,
+            'list' => $sysRoles
+        ];
+        return $result;
+    }
+
+    /**
+     * 返回参数管理列表
+     * @param string $paramKey
+     * @param int $pageSize
+     * @param int $currPage
+     * @return array
+     */
+    public function getSysConfigList(string $paramKey, int $pageSize = 10, int $currPage = 1): array
+    {
+        $totalCount = $this->sysConfigDao->getTotalCount($paramKey);
+
+        if ($totalCount > 0) {
+            $totalPage = ceil($totalCount / $pageSize);
+        } else {
+            $totalPage = 0;
+        }
+
+        if ($currPage <= 0 || $currPage > $totalPage) {
+            $currPage = 1;
+        }
+
+        $startCount = ($currPage - 1) * $pageSize;
+
+        $where = " 1=1 and a.status = 1 ";
+
+        if (!empty($key)) {
+            $where .= " and (a.param_key like '%" . $key . "%' or  a.remark like '%" . $key . "%')";
+        }
+
+        $sysRoles = Db::select("SELECT * FROM sys_config a JOIN (select id from sys_config order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
+
+        if (!empty($sysRoles)) {
+            $sysRoles = SysConfigFormatter::instance()->arrayFormat($sysRoles);
         }
 
         $result = [

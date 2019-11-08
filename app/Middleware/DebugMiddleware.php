@@ -39,7 +39,10 @@ class DebugMiddleware implements MiddlewareInterface
         $time = microtime(true);
         $response = $handler->handle($request);
 
-        /** @var Request $request */
+        if (env('APP_DEBUG', false) === false) {
+            return $response;
+        }
+        
         $request = $this->container->get(RequestInterface::class);
         $result = $response->getBody()->getContents();
 

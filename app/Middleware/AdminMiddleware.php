@@ -65,10 +65,11 @@ class AdminMiddleware implements MiddlewareInterface
 
         $this->logger->notice(PHP_EOL . 'TIME:' . date("Y-m-d h:i:s") . PHP_EOL . "PERMS:" . $perms . PHP_EOL . "IP:" . $request->getServerParams()["remote_addr"]);
 
-        if (env('APP_DEBUG', false) === true) {
+        // 开发下默认的id为 1
+        /*if (env('APP_DEBUG', false) === true) {
             JwtInstance::instance()->id = 1;
             return $handler->handle($request);
-        }
+        }*/
 
         if (empty($token)) {
             return $this->respone->error("token not null");

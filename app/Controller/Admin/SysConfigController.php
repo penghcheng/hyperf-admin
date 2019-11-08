@@ -95,4 +95,24 @@ class SysConfigController extends AbstractController
         }
     }
 
+    /**
+     * sys/config/delete
+     * 删除参数
+     */
+    public function sysConfigDelete()
+    {
+        $currentLoginUserId = JwtInstance::instance()->build()->getId();
+
+        $params = $this->request->post();
+        if (!is_array($params) || empty($params)) {
+            return $this->response->error("提交错误");
+        }
+        $result = $this->sysUserService->sysConfigDelete($params);
+        if ($result) {
+            return $this->response->success();
+        } else {
+            return $this->response->error("删除失败");
+        }
+    }
+
 }

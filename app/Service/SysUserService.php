@@ -760,12 +760,25 @@ class SysUserService extends Service
      * @param string $paramKey
      * @param string $paramValue
      * @param string $remark
-     * @param int $int
+     * @param int $id
+     * @return bool|string
      */
-    public function getSysConfigSave(string $paramKey, string $paramValue, string $remark, int $int)
+    public function getSysConfigSave(string $paramKey, string $paramValue, string $remark, int $id)
     {
-
-
+        $data = [
+            'param_key' => $paramKey,
+            'param_value' => $paramValue,
+            'remark' => $remark
+        ];
+        if (!empty($id)) {
+            $data['id'] = $id;
+        }
+        try {
+            $this->sysConfigDao->firstOrNew($data);
+            return true;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
-    
+
 }

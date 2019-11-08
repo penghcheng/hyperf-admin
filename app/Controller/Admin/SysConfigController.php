@@ -53,6 +53,11 @@ class SysConfigController extends AbstractController
         $remark = (string)$this->request->input('remark');
 
         $result = $this->sysUserService->getSysConfigSave($paramKey, $paramValue, $remark, 0);
+        if ($result === true) {
+            return $this->response->success();
+        } else {
+            return $this->response->error($result);
+        }
     }
 
 }

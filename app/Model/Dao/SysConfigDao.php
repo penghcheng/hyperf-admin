@@ -27,13 +27,25 @@ class SysConfigDao
         return $model;
     }
 
-    public function firstOrNew(array $data)
+    public function firstOrNew(array $data, $throw = true)
     {
-        $model = SysConfig::query()->firstOrNew(['param_key' => $data['param_key']], $data);
-        if (empty($model)) {
-            throw new BusinessException(0, '数据库中已存在该记录');
+        if (!isset($data['id'])) {
+            $config = SysConfig::query()->where("param_key", $data['param_key'])->first();
+            if (!empty($config)) {
+                throw new BusinessException(0, '数据库中已存在该记录');
+            }
+            $result = SysConfig::query()->insert($data);
+        } else {
+            $config = SysConfig::query()->where("id", '<>', $data['id'])->where("param_key", $data['param_key'])->first();
+            if (!empty($config)) {
+                throw new BusinessException(0, '数据库中已存在该记录');
+            }
+            $result = SysConfig::query()->where('id', $data['id'])->update($data);
         }
-        return $model;
+        if (empty($result) && $throw) {
+            throw new BusinessException(0, '保存失败');
+        }
+        return $result;
     }
 
     /**

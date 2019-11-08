@@ -24,7 +24,7 @@ class SysConfig extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['param_key'];
     /**
      * The attributes that should be cast to native types.
      *

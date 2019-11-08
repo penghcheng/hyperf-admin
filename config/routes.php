@@ -36,6 +36,7 @@ Router::addGroup('/hy-admin/', function () {
     Router::get('sys/log/list', 'App\Controller\Admin\SysLogController@sysLogList'); // 日志列表
 
     Router::get('sys/config/list', 'App\Controller\Admin\SysConfigController@sysConfigList'); // 参数列表
+    Router::post('sys/config/save', 'App\Controller\Admin\SysConfigController@sysConfigSave'); // 新增参数
 
     Router::post('sys/logout', 'App\Controller\Admin\SysUserController@sysLogout'); // 退出登录
 },

@@ -76,7 +76,7 @@ class SysConfigController extends AbstractController
     }
 
     /**
-     * 新增参数
+     * update参数
      * sys/config/update
      */
     public function sysConfigUpdate()

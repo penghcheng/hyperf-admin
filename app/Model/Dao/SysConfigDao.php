@@ -55,10 +55,7 @@ class SysConfigDao
      */
     public function getTotalCount(string $key): int
     {
-        $where = ['like', "'%" . $key . "%'"];
-
-        $count = SysConfig::query()->where("status", 1)->where('param_key', $where)->orWhere("remark", $where)->count();
-
+        $count = SysConfig::query()->where("status", 1)->where('param_key', 'like', "%".$key."%")->orWhere("remark", 'like', "%".$key."%")->count();
         return $count;
     }
 }

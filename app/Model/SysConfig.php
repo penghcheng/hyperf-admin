@@ -1,15 +1,17 @@
 <?php
 
 declare (strict_types=1);
+
 namespace App\Model;
 
 use Hyperf\DbConnection\Model\Model;
+
 /**
- * @property int $id 
- * @property string $param_key 
- * @property string $param_value 
- * @property int $status 
- * @property string $remark 
+ * @property int $id
+ * @property string $param_key
+ * @property string $param_value
+ * @property int $status
+ * @property string $remark
  */
 class SysConfig extends Model
 {
@@ -25,6 +27,9 @@ class SysConfig extends Model
      * @var array
      */
     protected $fillable = ['param_key'];
+
+    public $timestamps = false;
+
     /**
      * The attributes that should be cast to native types.
      *

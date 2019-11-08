@@ -735,8 +735,8 @@ class SysUserService extends Service
 
         $where = " 1=1 and a.status = 1 ";
 
-        if (!empty($key)) {
-            $where .= " and (a.param_key like '%" . $key . "%' or  a.remark like '%" . $key . "%')";
+        if (!empty($paramKey)) {
+            $where .= " and a.param_key like '%" . $paramKey . "%' or a.remark like '%" . $paramKey . "%'";
         }
 
         $sysRoles = Db::select("SELECT * FROM sys_config a JOIN (select id from sys_config order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
@@ -776,6 +776,16 @@ class SysUserService extends Service
         try {
             $this->sysConfigDao->firstOrNew($data);
             return true;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getSysConfigInfo($id)
+    {
+        try {
+            $model = $this->sysConfigDao->first($id);
+            return SysConfigFormatter::instance()->base($model);
         } catch (\Exception $e) {
             return $e->getMessage();
         }

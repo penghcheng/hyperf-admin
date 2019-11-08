@@ -93,8 +93,6 @@ class SysRoleController extends AbstractController
 
         $result = $this->sysUserService->getSysRoleInfo($id);
 
-        var_dump(json_encode($result['menuIdList']));
-
         if ($result) {
             return $this->response->success(['role' => $result]);
         } else {

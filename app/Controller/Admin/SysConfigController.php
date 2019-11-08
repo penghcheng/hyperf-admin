@@ -60,4 +60,39 @@ class SysConfigController extends AbstractController
         }
     }
 
+    /**
+     * 获取参数
+     * sys/config/info/3
+     */
+    public function sysConfigInfo($id)
+    {
+        $currentLoginUserId = JwtInstance::instance()->build()->getId();
+        $result = $this->sysUserService->getSysConfigInfo($id);
+        if (is_array($result)) {
+            return $this->response->success(['config' => $result]);
+        } else {
+            return $this->response->error($result);
+        }
+    }
+
+    /**
+     * 新增参数
+     * sys/config/update
+     */
+    public function sysConfigUpdate()
+    {
+        $currentLoginUserId = JwtInstance::instance()->build()->getId();
+        $paramKey = (string)$this->request->input('paramKey');
+        $paramValue = (string)$this->request->input('paramValue');
+        $remark = (string)$this->request->input('remark');
+        $id = (string)$this->request->input('id');
+
+        $result = $this->sysUserService->getSysConfigSave($paramKey, $paramValue, $remark, $id);
+        if ($result === true) {
+            return $this->response->success();
+        } else {
+            return $this->response->error($result);
+        }
+    }
+
 }

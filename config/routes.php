@@ -36,7 +36,10 @@ Router::addGroup('/hy-admin/', function () {
     Router::get('sys/log/list', 'App\Controller\Admin\SysLogController@sysLogList'); // 日志列表
 
     Router::get('sys/oss/list', 'App\Controller\Admin\SysOssController@sysOssList'); // OSS列表
+    Router::get('sys/oss/config', 'App\Controller\Admin\SysOssController@sysOssConfig'); // OSS配置
     Router::post('sys/oss/delete', 'App\Controller\Admin\SysOssController@sysOssDelete'); // OSS删除
+    Router::post('sys/oss/saveConfig', 'App\Controller\Admin\SysOssController@sysOssSaveConfig'); // 保存OSS配置
+    Router::post('sys/oss/upload', 'App\Controller\Admin\SysOssController@sysOssUpload'); // 上传文件
 
     Router::get('sys/config/list', 'App\Controller\Admin\SysConfigController@sysConfigList'); // 参数列表
     Router::get('sys/config/info/{id:\d+}', 'App\Controller\Admin\SysConfigController@sysConfigInfo'); // 获取参数

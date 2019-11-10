@@ -9,6 +9,9 @@
 namespace App\Service;
 
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
+use App\Model\SysConfig;
 use App\Model\SysOss;
 use App\Service\Formatter\SysOssFormatter;
 use Hyperf\DbConnection\Db;
@@ -64,6 +67,45 @@ class CommonService extends Service
     public function sysOssDelete(array $params)
     {
         return Db::table('sys_oss')->whereIn("id", $params)->delete();
+    }
+
+    /**
+     * 获取oss的配置
+     */
+    public function sysOssConfig()
+    {
+        try {
+            $result = SysConfig::query()->where("param_key", 'CLOUD_STORAGE_CONFIG_KEY')->first();
+            return $result;
+        } catch (\Exception $e) {
+            throw  new BusinessException(ErrorCode::NOTE_NOT_EXIST);
+        }
+    }
+
+    /**
+     * 保存oss配置
+     * @param array $params
+     * @return array
+     */
+    public function sysOssSaveConfig(array $params)
+    {
+        $isResult = SysConfig::query()->where("param_key", 'CLOUD_STORAGE_CONFIG_KEY')->first();
+        if (empty($isResult)) {
+            $result = SysConfig::query()->create([
+                'param_key' => 'CLOUD_STORAGE_CONFIG_KEY',
+                'param_value' => json_encode($params, true),
+                'status' => 0,
+                'remark' => '云存储配置信息'
+            ]);
+        } else {
+            $result = SysConfig::query()->where("param_key", 'CLOUD_STORAGE_CONFIG_KEY')->update([
+                'param_key' => 'CLOUD_STORAGE_CONFIG_KEY',
+                'param_value' => json_encode($params, true),
+                'status' => 0,
+                'remark' => '云存储配置信息'
+            ]);
+        }
+        return $result;
     }
 
 }

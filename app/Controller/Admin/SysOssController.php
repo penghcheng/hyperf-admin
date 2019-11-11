@@ -158,6 +158,11 @@ class SysOssController extends AbstractController
             $uploadToken = $auth->uploadToken($config['qiniuBucketName']);
             $upload_mgr = new UploadManager();
             $rel = $upload_mgr->putFile($uploadToken, $config['qiniuPrefix'] . "/" . $file->getClientFilename(), $fileName);
+
+            if(empty($rel[0])){
+                return $this->response->error("请检查oss配置");
+            }
+
             if (!empty($rel) && file_exists($fileName)) {
                 unlink($fileName);
             }

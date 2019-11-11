@@ -16,6 +16,9 @@ Hyperf-Admin 基于Hyperf v1.1 开发的前后分离管理后台
 - 管理员管理
 - 角色管理
 - 菜单管理
+- 参数管理
+- OSS管理
+- 日志管理
 
 ![输入图片说明](https://raw.githubusercontent.com/penghcheng/hyperf-admin/master/screenshot/login.png "01.png")
 ![输入图片说明](https://raw.githubusercontent.com/penghcheng/hyperf-admin/master/screenshot/user.png "01.png")

@@ -12,16 +12,14 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 
+use App\Annotation\SysLogAnnotation;
 use App\Controller\AbstractController;
 use App\Model\Dao\SysUserDao;
-use App\Model\SysUser;
 use App\Service\Formatter\SysUserFormatter;
 use App\Service\Instance\JwtInstance;
 use App\Service\SysUserService;
-use Hyperf\DbConnection\Db;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Di\Annotation\Inject;
-
 
 class SysUserController extends AbstractController
 {
@@ -57,7 +55,6 @@ class SysUserController extends AbstractController
             }
 
             $token = JwtInstance::instance()->encode($sysUser);
-
             return $this->response->success([
                 'token' => $token,
                 'expire' => 43200
@@ -71,6 +68,7 @@ class SysUserController extends AbstractController
 
     /**
      * 用户信息
+     * @SysLogAnnotation()
      */
     public function getInfoByLoginUserId()
     {
@@ -88,8 +86,7 @@ class SysUserController extends AbstractController
 
     /**
      * 用户信息 userId
-     * @param $id
-     * @return \Psr\Http\Message\ResponseInterface
+     * @SysLogAnnotation()
      */
     public function getInfoByUserId($id)
     {
@@ -108,6 +105,7 @@ class SysUserController extends AbstractController
 
     /**
      * 管理员list
+     * @SysLogAnnotation()
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function sysUserList()
@@ -128,6 +126,7 @@ class SysUserController extends AbstractController
 
     /**
      * 保存管理员
+     * @SysLogAnnotation()
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Exception
      */
@@ -162,7 +161,7 @@ class SysUserController extends AbstractController
     public function sysUserUpdate()
     {
 
-        $currentLoginUserId=JwtInstance::instance()->build()->getId();
+        $currentLoginUserId = JwtInstance::instance()->build()->getId();
 
         $username = (string)$this->request->input('username');
         $password = (string)$this->request->input('password');
@@ -175,7 +174,7 @@ class SysUserController extends AbstractController
 
         $result = $this->sysUserService->sysUserSave($username, $password, $email, $mobile, $roleIdList, $salt, $status, $currentLoginUserId, $userId);
 
-        if($result == false && $status == 0 && ($currentLoginUserId == $userId) ){
+        if ($result == false && $status == 0 && ($currentLoginUserId == $userId)) {
             return $this->response->error("不能禁用当前登录用户");
         }
 

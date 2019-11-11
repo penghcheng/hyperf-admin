@@ -9,6 +9,7 @@
 namespace App\Controller\Admin;
 
 
+use App\Annotation\SysLogAnnotation;
 use App\Controller\AbstractController;
 use App\Service\CommonService;
 use App\Service\Instance\JwtInstance;
@@ -16,6 +17,9 @@ use Hyperf\Di\Annotation\Inject;
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
 
+/**
+ * @SysLogAnnotation()
+ */
 class SysOssController extends AbstractController
 {
 

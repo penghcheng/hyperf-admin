@@ -711,6 +711,16 @@ class SysUserService extends Service
     }
 
     /**
+     * 保存日志
+     * @param array $params
+     * @return bool
+     */
+    public function sysLogSave(array  $params)
+    {
+        return Db::table("sys_log")->insert($params);
+    }
+
+    /**
      * 返回参数管理列表
      * @param string $paramKey
      * @param int $pageSize

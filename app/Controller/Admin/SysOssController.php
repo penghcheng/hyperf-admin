@@ -13,6 +13,8 @@ use App\Controller\AbstractController;
 use App\Service\CommonService;
 use App\Service\Instance\JwtInstance;
 use Hyperf\Di\Annotation\Inject;
+use Qiniu\Auth;
+use Qiniu\Storage\UploadManager;
 
 class SysOssController extends AbstractController
 {
@@ -134,6 +136,44 @@ class SysOssController extends AbstractController
     public function sysOssUpload()
     {
         $currentLoginUserId = JwtInstance::instance()->build()->getId();
-        return $this->response->error("上传功能还未完善，请继续关注");
+
+        $result = $this->commonService->sysOssConfig();
+        $config = json_decode($result->param_value, true);
+
+        if(empty($config['qiniuAccessKey'])){
+            return $this->response->error("请设置七牛云的oss配置");
+        }
+
+        $file = $this->request->file('file');
+
+        $result = false;
+
+        //七牛云
+        if (!empty($config) && $config['type'] == 1) {
+
+            $fileName = "/hyperf-skeleton/upload/" . $file->getClientFilename();
+            $file->moveTo($fileName);
+
+            $auth = new Auth($config['qiniuAccessKey'], $config['qiniuSecretKey']);
+            $uploadToken = $auth->uploadToken($config['qiniuBucketName']);
+            $upload_mgr = new UploadManager();
+            $rel = $upload_mgr->putFile($uploadToken, $config['qiniuPrefix'] . "/" . $file->getClientFilename(), $fileName);
+            if (!empty($rel) && file_exists($fileName)) {
+                unlink($fileName);
+            }
+            $url = $config['qiniuDomain'] . "/" . $rel[0]['key'];
+
+            $data = [
+                'url' => $url,
+                'create_date' => date("Y-m-d h:i:s",time())
+            ];
+            $result = $this->commonService->sysOssSave($data);
+        }
+
+        if ($result) {
+            return $this->response->success();
+        } else {
+            return $this->response->error("上传失败");
+        }
     }
 }

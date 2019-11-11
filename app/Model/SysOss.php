@@ -17,12 +17,15 @@ class SysOss extends Model
      * @var string
      */
     protected $table = 'sys_oss';
+
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['url'];
     /**
      * The attributes that should be cast to native types.
      *

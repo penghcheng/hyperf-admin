@@ -108,4 +108,14 @@ class CommonService extends Service
         return $result;
     }
 
+    /**
+     * 保存oss
+     * @param array $params
+     * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model
+     */
+    public function sysOssSave(array $params)
+    {
+        return Db::table("sys_oss")->insert($params);
+    }
+
 }

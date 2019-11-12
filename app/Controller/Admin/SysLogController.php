@@ -9,14 +9,13 @@
 namespace App\Controller\Admin;
 
 
-use App\Annotation\SysLogAnnotation;
 use App\Controller\AbstractController;
 use App\Service\Instance\JwtInstance;
 use App\Service\SysUserService;
 use Hyperf\Di\Annotation\Inject;
 
 /**
- * @SysLogAnnotation()
+ * 操作日志管理
  */
 class SysLogController extends AbstractController
 {

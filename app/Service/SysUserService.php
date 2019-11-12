@@ -270,7 +270,7 @@ class SysUserService extends Service
             $where .= " and a.username like '%" . $username . "%'";
         }
 
-        $sysUsers = Db::select("SELECT * FROM sys_user a JOIN (select user_id from sys_user order by user_id desc limit " . $startCount . ", " . $pageSize . ") b ON a.user_id = b.user_id where " . $where . " order by b.user_id desc;");
+        $sysUsers = Db::select("SELECT * FROM sys_user a where " . $where . " order by a.user_id desc limit " . $startCount . "," . $pageSize);
 
         if (!empty($sysUsers)) {
             $sysUsers = SysUserFormatter::instance()->arrayFormat($sysUsers);
@@ -320,7 +320,7 @@ class SysUserService extends Service
             $where .= " and a.role_name like '%" . $roleName . "%'";
         }
 
-        $sysRoles = Db::select("SELECT * FROM sys_role a JOIN (select role_id from sys_role order by role_id desc limit " . $startCount . ", " . $pageSize . ") b ON a.role_id = b.role_id where " . $where . " order by b.role_id desc;");
+        $sysRoles = Db::select("SELECT * FROM sys_role a where " . $where . " order by a.role_id desc limit " . $startCount . "," . $pageSize);
 
         if (!empty($sysRoles)) {
             $sysRoles = SysRoleFormatter::instance()->arrayFormat($sysRoles);
@@ -694,7 +694,8 @@ class SysUserService extends Service
             $where .= " and a.username like '%" . $key . "%' or  a.operation like '%" . $key . "%'";
         }
 
-        $sysLogs = Db::select("SELECT * FROM sys_log a JOIN (select id from sys_log order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
+        $sysLogs = Db::select("SELECT * FROM sys_log a where " . $where . " order by a.id desc limit " . $startCount . "," . $pageSize);
+
 
         if (!empty($sysLogs)) {
             $sysLogs = SysLogFormatter::instance()->arrayFormat($sysLogs);
@@ -715,7 +716,7 @@ class SysUserService extends Service
      * @param array $params
      * @return bool
      */
-    public function sysLogSave(array  $params)
+    public function sysLogSave(array $params)
     {
         return Db::table("sys_log")->insert($params);
     }
@@ -749,10 +750,10 @@ class SysUserService extends Service
             $where .= " and a.param_key like '%" . $paramKey . "%' or a.remark like '%" . $paramKey . "%'";
         }
 
-        $sysRoles = Db::select("SELECT * FROM sys_config a JOIN (select id from sys_config order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
+        $sysConfigs = Db::select("SELECT * FROM sys_config a where " . $where . " order by a.id desc limit " . $startCount . "," . $pageSize);
 
-        if (!empty($sysRoles)) {
-            $sysRoles = SysConfigFormatter::instance()->arrayFormat($sysRoles);
+        if (!empty($sysConfigs)) {
+            $sysConfigs = SysConfigFormatter::instance()->arrayFormat($sysConfigs);
         }
 
         $result = [
@@ -760,7 +761,7 @@ class SysUserService extends Service
             'pageSize' => $pageSize,
             'totalPage' => $totalPage,
             'currPage' => $currPage,
-            'list' => $sysRoles
+            'list' => $sysConfigs
         ];
         return $result;
     }

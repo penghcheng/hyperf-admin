@@ -43,7 +43,7 @@ class CommonService extends Service
 
         $where = " 1=1 ";
 
-        $sysOsss = Db::select("SELECT * FROM sys_oss a JOIN (select id from sys_oss order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
+        $sysOsss = Db::select("SELECT * FROM sys_oss a where " . $where . " order by a.id desc limit " . $startCount . "," . $pageSize);
 
         if (!empty($sysOsss)) {
             $sysOsss = SysOssFormatter::instance()->arrayFormat($sysOsss);

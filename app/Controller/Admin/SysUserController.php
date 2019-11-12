@@ -156,6 +156,7 @@ class SysUserController extends AbstractController
 
     /**
      * update管理员
+     * @SysLogAnnotation()
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function sysUserUpdate()
@@ -189,6 +190,7 @@ class SysUserController extends AbstractController
     /**
      * 删除管理员
      * url:sys/user/delete
+     * @SysLogAnnotation()
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function sysUserDelete()
@@ -218,6 +220,7 @@ class SysUserController extends AbstractController
 
     /**
      * sys/user/password
+     * @SysLogAnnotation()
      * 修改密码
      */
     public function password()

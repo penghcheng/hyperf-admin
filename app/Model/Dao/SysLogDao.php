@@ -35,9 +35,8 @@ class SysLogDao
      */
     public function getTotalCount(string $key): int
     {
-        $where = ['like', "'%" . $key . "%'"];
 
-        $count = SysLog::query()->where('username', $where)->orWhere("operation", $where)->count();
+        $count = SysLog::query()->where('username', 'like', "%".$key."%")->orWhere("operation", 'like', "%".$key."%")->count();
 
         return $count;
     }

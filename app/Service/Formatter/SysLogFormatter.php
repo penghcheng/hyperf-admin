@@ -21,6 +21,7 @@ class SysLogFormatter extends Formatter
             'method' => $model->method,
             'username' => $model->username ?? null,
             'operation' => $model->operation,
+            'params' => $model->params,
             'time' => $model->time,
             'createDate' => $model->create_date
         ];
@@ -34,6 +35,7 @@ class SysLogFormatter extends Formatter
             'method' => $model['method'],
             'username' => $model['username'] ?? null,
             'operation' => $model['operation'],
+            'params' => $model['params'],
             'time' => $model['time'],
             'createDate' => $model['create_date']
         ];

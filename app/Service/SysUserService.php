@@ -694,10 +694,10 @@ class SysUserService extends Service
             $where .= " and a.username like '%" . $key . "%' or  a.operation like '%" . $key . "%'";
         }
 
-        $sysRoles = Db::select("SELECT * FROM sys_log a JOIN (select id from sys_log order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
+        $sysLogs = Db::select("SELECT * FROM sys_log a JOIN (select id from sys_log order by id desc limit " . $startCount . ", " . $pageSize . ") b ON a.id = b.id where " . $where . " order by b.id desc;");
 
-        if (!empty($sysRoles)) {
-            $sysRoles = SysLogFormatter::instance()->arrayFormat($sysRoles);
+        if (!empty($sysLogs)) {
+            $sysLogs = SysLogFormatter::instance()->arrayFormat($sysLogs);
         }
 
         $result = [
@@ -705,7 +705,7 @@ class SysUserService extends Service
             'pageSize' => $pageSize,
             'totalPage' => $totalPage,
             'currPage' => $currPage,
-            'list' => $sysRoles
+            'list' => $sysLogs
         ];
         return $result;
     }

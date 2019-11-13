@@ -139,7 +139,6 @@ class SysMenuController extends AbstractController
     public function sysMenuUpdate()
     {
         return $this->response->error('测试环境不能修改');
-
         $userId = JwtInstance::instance()->build()->getId();
 
         $menuId = (int)$this->request->input('menuId');
@@ -179,7 +178,6 @@ class SysMenuController extends AbstractController
     public function sysMenuDelete($id)
     {
         return $this->response->error('测试环境不能删除');
-
         $userId = JwtInstance::instance()->build()->getId();
 
         $result = $this->sysUserService->getSysMenuDelete($id);

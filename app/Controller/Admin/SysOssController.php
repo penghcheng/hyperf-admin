@@ -109,6 +109,10 @@ class SysOssController extends AbstractController
         $qiniuPrefix = (string)$this->request->input('qiniuPrefix');
         $qiniuSecretKey = (string)$this->request->input('qiniuSecretKey');
 
+        $localServerDomain = (string)$this->request->input('localServerDomain');
+        $localServerPrefix = (string)$this->request->input('localServerPrefix');
+        $localServerPath = (string)$this->request->input('localServerPath');
+
         $params = [
             'type' => $type,
             'aliyunAccessKeyId' => $aliyunAccessKeyId,
@@ -126,7 +130,10 @@ class SysOssController extends AbstractController
             'qiniuBucketName' => $qiniuBucketName,
             'qiniuDomain' => $qiniuDomain,
             'qiniuPrefix' => $qiniuPrefix,
-            'qiniuSecretKey' => $qiniuSecretKey
+            'qiniuSecretKey' => $qiniuSecretKey,
+            'localServerDomain' => $localServerDomain,
+            'localServerPrefix' => $localServerPrefix,
+            'localServerPath' => $localServerPath
         ];
 
         $result = $this->commonService->sysOssSaveConfig($params);
@@ -207,6 +214,11 @@ class SysOssController extends AbstractController
                 Log::get()->error($e->getMessage());
                 return $this->response->error("请检查阿里云的oss配置");
             }
+        }
+
+        // 本地
+        if (!empty($config) && $config['type'] == 4) {
+            
         }
 
         if ($result) {

@@ -32,7 +32,7 @@ command:
     # 监听的文件有更改会执行的命令，不支持复杂的命令，如需要请写成脚本调用
     # 支持变量占位符,{{file}} {{ext}} {{changed}}
     exec:
-        - php ./bin/hyperf.php start
+        - rm -rf ./runtime/container/proxy & php bin/hyperf.php start
 
     # 开启监听后自动执行一次上面 exec 配置的全部命令
     startup: true

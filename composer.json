@@ -38,7 +38,8 @@
         "hyperf/constants": "~1.1.0",
         "hyperf/async-queue": "~1.1.0",
         "firebase/php-jwt": "^5.0",
-        "qiniu/php-sdk": "^7.2"
+        "qiniu/php-sdk": "^7.2",
+        "aliyuncs/oss-sdk-php": "^2.3"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",

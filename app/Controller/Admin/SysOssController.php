@@ -11,9 +11,12 @@ namespace App\Controller\Admin;
 
 use App\Annotation\SysLogAnnotation;
 use App\Controller\AbstractController;
+use App\Kernel\Log\Log;
 use App\Service\CommonService;
 use App\Service\Instance\JwtInstance;
 use Hyperf\Di\Annotation\Inject;
+use OSS\Core\OssException;
+use OSS\OssClient;
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
 
@@ -144,27 +147,26 @@ class SysOssController extends AbstractController
         $result = $this->commonService->sysOssConfig();
         $config = json_decode($result->param_value, true);
 
-        if(empty($config['qiniuAccessKey'])){
-            return $this->response->error("请设置七牛云的oss配置");
-        }
-
         $file = $this->request->file('file');
 
-        $result = false;
+        $fileName = "/hyperf-skeleton/upload/" . $file->getClientFilename();
+        $file->moveTo($fileName);
 
+        $result = false;
         //七牛云
         if (!empty($config) && $config['type'] == 1) {
 
-            $fileName = "/hyperf-skeleton/upload/" . $file->getClientFilename();
-            $file->moveTo($fileName);
+            if (empty($config['qiniuAccessKey'])) {
+                return $this->response->error("请设置七牛云的oss配置");
+            }
 
             $auth = new Auth($config['qiniuAccessKey'], $config['qiniuSecretKey']);
             $uploadToken = $auth->uploadToken($config['qiniuBucketName']);
             $upload_mgr = new UploadManager();
             $rel = $upload_mgr->putFile($uploadToken, $config['qiniuPrefix'] . "/" . $file->getClientFilename(), $fileName);
 
-            if(empty($rel[0])){
-                return $this->response->error("请检查oss配置");
+            if (empty($rel[0])) {
+                return $this->response->error("请检查七牛云的oss配置");
             }
 
             if (!empty($rel) && file_exists($fileName)) {
@@ -174,9 +176,37 @@ class SysOssController extends AbstractController
 
             $data = [
                 'url' => $url,
-                'create_date' => date("Y-m-d h:i:s",time())
+                'create_date' => date("Y-m-d h:i:s", time())
             ];
             $result = $this->commonService->sysOssSave($data);
+        }
+
+        // 阿里云
+        if (!empty($config) && $config['type'] == 2) {
+
+            if (empty($config['aliyunAccessKeyId'])) {
+                return $this->response->error("请设置阿里云的oss配置");
+            }
+            try {
+                $ossClient = new OssClient($config['aliyunAccessKeyId'], $config['aliyunAccessKeySecret'], $config['aliyunEndPoint']);
+                $aliOssResult = $ossClient->uploadFile($config['aliyunBucketName'], $config['aliyunPrefix'] . "/" . $file->getClientFilename(), $fileName);
+                if (is_array($aliOssResult) && !empty($aliOssResult['oss-request-url'])) {
+                    $data = [
+                        'url' => $aliOssResult['oss-request-url'],
+                        'create_date' => date("Y-m-d h:i:s", time())
+                    ];
+                    // 删除本地文件
+                    if (file_exists($fileName)) {
+                        unlink($fileName);
+                    }
+                    $result = $this->commonService->sysOssSave($data);
+                } else {
+                    return $this->response->error("请检查阿里云的oss配置");
+                }
+            } catch (OssException $e) {
+                Log::get()->error($e->getMessage());
+                return $this->response->error("请检查阿里云的oss配置");
+            }
         }
 
         if ($result) {

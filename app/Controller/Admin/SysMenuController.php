@@ -138,6 +138,7 @@ class SysMenuController extends AbstractController
      */
     public function sysMenuUpdate()
     {
+        return $this->response->error('测试环境不能修改');
 
         $userId = JwtInstance::instance()->build()->getId();
 

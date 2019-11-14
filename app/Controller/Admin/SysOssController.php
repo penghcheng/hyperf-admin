@@ -156,9 +156,20 @@ class SysOssController extends AbstractController
 
         $file = $this->request->file('file');
 
-        $fileName = "/hyperf-skeleton/upload/" . $file->getClientFilename();
-        $file->moveTo($fileName);
+        $localServerPath = !empty($config['localServerPath']) ? $config['localServerPath'] : '/hyperf-upload';
+        $localServerPrefix = !empty($config['localServerPrefix']) ? $config['localServerPrefix'] . '/' : '';
+        $dateDir = date("Ym/d", time());
+        $uploadPath = $localServerPrefix . $dateDir;
 
+        if (!is_dir($localServerPath . "/" . $uploadPath)) {
+            mkdir($localServerPath . "/" . $uploadPath, 0777, true);
+        }
+        $fileName = $localServerPath . "/" . $uploadPath . "/" . $file->getClientFilename();
+        try {
+            $file->moveTo($fileName);
+        } catch (\Exception $e) {
+            return $this->response->error($e->getMessage());
+        }
         $result = false;
         //七牛云
         if (!empty($config) && $config['type'] == 1) {
@@ -218,7 +229,13 @@ class SysOssController extends AbstractController
 
         // 本地
         if (!empty($config) && $config['type'] == 4) {
-            
+            $url = $config['localServerDomain'] . "/" . $uploadPath . "/" . $file->getClientFilename();
+            $data = [
+                'url' => $url,
+                'create_date' => date("Y-m-d h:i:s", time())
+            ];
+            var_dump($url);
+            $result = $this->commonService->sysOssSave($data);
         }
 
         if ($result) {

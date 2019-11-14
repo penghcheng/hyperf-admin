@@ -72,7 +72,7 @@ class SysLogAspect extends AbstractAspect
             'username' => $username,
             'operation' => $path,
             'method' => $requestMethod,
-            'params' => json_encode($params),
+            'params' => json_encode($params).json_encode($arguments),
             'time' => number_format($subTime, 2),
             'ip' => $ip,
             'create_date' => date("Y-m-d h:i:s", time())

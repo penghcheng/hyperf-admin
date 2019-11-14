@@ -11,10 +11,15 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Kernel\Log\Log;
 use App\Model\SysConfig;
 use App\Model\SysOss;
 use App\Service\Formatter\SysOssFormatter;
 use Hyperf\DbConnection\Db;
+use OSS\Core\OssException;
+use OSS\OssClient;
+use Qiniu\Auth;
+use Qiniu\Storage\UploadManager;
 
 class CommonService extends Service
 {
@@ -117,5 +122,77 @@ class CommonService extends Service
     {
         return Db::table("sys_oss")->insert($params);
     }
+
+    /**
+     * 七牛上传
+     * @param $qiniuDomain
+     * @param $qiniuAccessKey
+     * @param $qiniuSecretKey
+     * @param $qiniuPrefix
+     * @param $qiniuBucketName
+     * @param string|null $getClientFilename
+     * @param string $fileName
+     * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model
+     * @throws \Exception
+     */
+    public function uploadQiniu($qiniuDomain, $qiniuAccessKey, $qiniuSecretKey, $qiniuBucketName, $qiniuPrefix, ?string $getClientFilename, string $fileName)
+    {
+        $auth = new Auth($qiniuAccessKey, $qiniuSecretKey);
+        $uploadToken = $auth->uploadToken($qiniuBucketName);
+        $upload_mgr = new UploadManager();
+        $rel = $upload_mgr->putFile($uploadToken, $qiniuPrefix . "/" . $getClientFilename, $fileName);
+
+        if (empty($rel[0])) {
+            //return "请检查七牛云的oss配置";
+            throw  new BusinessException(500, "请检查七牛云的oss配置");
+        }
+
+        if (!empty($rel) && file_exists($fileName)) {
+            unlink($fileName);
+        }
+        $url = $qiniuDomain . "/" . $rel[0]['key'];
+
+        $data = [
+            'url' => $url,
+            'create_date' => date("Y-m-d h:i:s", time())
+        ];
+        return $this->sysOssSave($data);
+    }
+
+    /**
+     * 阿里云上传
+     * @param $aliyunAccessKeyId
+     * @param $aliyunAccessKeySecret
+     * @param $aliyunEndPoint
+     * @param $aliyunBucketName
+     * @param $aliyunPrefix
+     * @param string|null $getClientFilename
+     * @param string $fileName
+     * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model
+     */
+    public function uploadAliyun($aliyunAccessKeyId, $aliyunAccessKeySecret, $aliyunEndPoint, $aliyunBucketName, $aliyunPrefix, ?string $getClientFilename, string $fileName)
+    {
+        try {
+            $ossClient = new OssClient($aliyunAccessKeyId, $aliyunAccessKeySecret, $aliyunEndPoint);
+            $aliOssResult = $ossClient->uploadFile($aliyunBucketName, $aliyunPrefix . "/" . $getClientFilename, $fileName);
+            if (is_array($aliOssResult) && !empty($aliOssResult['oss-request-url'])) {
+                $data = [
+                    'url' => $aliOssResult['oss-request-url'],
+                    'create_date' => date("Y-m-d h:i:s", time())
+                ];
+                // 删除本地文件
+                if (file_exists($fileName)) {
+                    unlink($fileName);
+                }
+                return $this->sysOssSave($data);
+            } else {
+                throw  new BusinessException(500, "请检查七牛云的oss配置");
+            }
+        } catch (OssException $e) {
+            Log::get()->error($e->getMessage());
+            throw  new BusinessException(500, "请检查七牛云的oss配置");
+        }
+    }
+
 
 }

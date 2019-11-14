@@ -178,7 +178,13 @@ class SysOssController extends AbstractController
                 return $this->response->error("请设置七牛云的oss配置");
             }
 
-            $auth = new Auth($config['qiniuAccessKey'], $config['qiniuSecretKey']);
+            try {
+                $result = $this->commonService->uploadQiniu($config['qiniuDomain'], $config['qiniuAccessKey'], $config['qiniuSecretKey'], $config['qiniuBucketName'], $config['qiniuPrefix'], $file->getClientFilename(), $fileName);
+            } catch (\Exception $e) {
+                return $this->response->error($e->getMessage());
+            }
+
+            /*$auth = new Auth($config['qiniuAccessKey'], $config['qiniuSecretKey']);
             $uploadToken = $auth->uploadToken($config['qiniuBucketName']);
             $upload_mgr = new UploadManager();
             $rel = $upload_mgr->putFile($uploadToken, $config['qiniuPrefix'] . "/" . $file->getClientFilename(), $fileName);
@@ -196,7 +202,8 @@ class SysOssController extends AbstractController
                 'url' => $url,
                 'create_date' => date("Y-m-d h:i:s", time())
             ];
-            $result = $this->commonService->sysOssSave($data);
+            $result = $this->commonService->sysOssSave($data);*/
+
         }
 
         // 阿里云
@@ -205,7 +212,14 @@ class SysOssController extends AbstractController
             if (empty($config['aliyunAccessKeyId'])) {
                 return $this->response->error("请设置阿里云的oss配置");
             }
+
             try {
+                $result = $this->commonService->uploadAliyun($config['aliyunAccessKeyId'], $config['aliyunAccessKeySecret'], $config['aliyunEndPoint'], $config['aliyunBucketName'], $config['aliyunPrefix'], $file->getClientFilename(), $fileName);
+            } catch (\Exception $e) {
+                return $this->response->error($e->getMessage());
+            }
+
+            /*try {
                 $ossClient = new OssClient($config['aliyunAccessKeyId'], $config['aliyunAccessKeySecret'], $config['aliyunEndPoint']);
                 $aliOssResult = $ossClient->uploadFile($config['aliyunBucketName'], $config['aliyunPrefix'] . "/" . $file->getClientFilename(), $fileName);
                 if (is_array($aliOssResult) && !empty($aliOssResult['oss-request-url'])) {
@@ -224,7 +238,7 @@ class SysOssController extends AbstractController
             } catch (OssException $e) {
                 Log::get()->error($e->getMessage());
                 return $this->response->error("请检查阿里云的oss配置");
-            }
+            }*/
         }
 
         // 本地
@@ -234,7 +248,6 @@ class SysOssController extends AbstractController
                 'url' => $url,
                 'create_date' => date("Y-m-d h:i:s", time())
             ];
-            var_dump($url);
             $result = $this->commonService->sysOssSave($data);
         }
 

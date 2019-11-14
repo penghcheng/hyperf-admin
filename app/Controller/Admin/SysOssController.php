@@ -183,27 +183,6 @@ class SysOssController extends AbstractController
             } catch (\Exception $e) {
                 return $this->response->error($e->getMessage());
             }
-
-            /*$auth = new Auth($config['qiniuAccessKey'], $config['qiniuSecretKey']);
-            $uploadToken = $auth->uploadToken($config['qiniuBucketName']);
-            $upload_mgr = new UploadManager();
-            $rel = $upload_mgr->putFile($uploadToken, $config['qiniuPrefix'] . "/" . $file->getClientFilename(), $fileName);
-
-            if (empty($rel[0])) {
-                return $this->response->error("请检查七牛云的oss配置");
-            }
-
-            if (!empty($rel) && file_exists($fileName)) {
-                unlink($fileName);
-            }
-            $url = $config['qiniuDomain'] . "/" . $rel[0]['key'];
-
-            $data = [
-                'url' => $url,
-                'create_date' => date("Y-m-d h:i:s", time())
-            ];
-            $result = $this->commonService->sysOssSave($data);*/
-
         }
 
         // 阿里云
@@ -218,27 +197,6 @@ class SysOssController extends AbstractController
             } catch (\Exception $e) {
                 return $this->response->error($e->getMessage());
             }
-
-            /*try {
-                $ossClient = new OssClient($config['aliyunAccessKeyId'], $config['aliyunAccessKeySecret'], $config['aliyunEndPoint']);
-                $aliOssResult = $ossClient->uploadFile($config['aliyunBucketName'], $config['aliyunPrefix'] . "/" . $file->getClientFilename(), $fileName);
-                if (is_array($aliOssResult) && !empty($aliOssResult['oss-request-url'])) {
-                    $data = [
-                        'url' => $aliOssResult['oss-request-url'],
-                        'create_date' => date("Y-m-d h:i:s", time())
-                    ];
-                    // 删除本地文件
-                    if (file_exists($fileName)) {
-                        unlink($fileName);
-                    }
-                    $result = $this->commonService->sysOssSave($data);
-                } else {
-                    return $this->response->error("请检查阿里云的oss配置");
-                }
-            } catch (OssException $e) {
-                Log::get()->error($e->getMessage());
-                return $this->response->error("请检查阿里云的oss配置");
-            }*/
         }
 
         // 本地

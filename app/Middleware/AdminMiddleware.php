@@ -81,7 +81,7 @@ class AdminMiddleware implements MiddlewareInterface
             JwtInstance::instance()->decode($token);
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
-            return $this->respone->error($e->getMessage());
+            return $this->respone->error($e->getMessage(),401);
         }
 
         $accessUserId = JwtInstance::instance()->build()->getId();

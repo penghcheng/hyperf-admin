@@ -28,7 +28,7 @@ class ErrorCode extends AbstractConstants
     /**
      * @Message("Token已失效")
      */
-    const TOKEN_INVALID = 700;
+    const TOKEN_INVALID = 401;
 
     /**
      * @Message("用户没有注册")

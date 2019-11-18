@@ -6,6 +6,7 @@ namespace App\Service\Instance;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Kernel\Log\Log;
 use App\Model\Dao\SysUserDao;
 use App\Model\SysUser;
 use Firebase\JWT\JWT;
@@ -16,7 +17,7 @@ class JwtInstance
 {
     use StaticInstance;
 
-    const KEY = 'NoteBook';
+    const KEY = 'Hyperf-admin';
 
     /**
      * @var int
@@ -45,13 +46,18 @@ class JwtInstance
     {
         try {
             $decoded = (array)JWT::decode($token, self::KEY, ['HS256']);
-        } catch (\Throwable $exception) {
-            throw new BusinessException(ErrorCode::SERVER_ERROR, $exception->getMessage());
+        } catch(\Firebase\JWT\SignatureInvalidException $e) {  //签名不正确
+            Log::get()->error($e->getMessage());
+            throw new BusinessException(ErrorCode::TOKEN_INVALID, $e->getMessage());
+        }catch(\Firebase\JWT\ExpiredException $e) {  // token过期
+            Log::get()->error($e->getMessage());
+            throw new BusinessException(ErrorCode::TOKEN_INVALID, $e->getMessage());
+        }catch (\Throwable $e) {
+            Log::get()->error($e->getMessage());
+            throw new BusinessException(ErrorCode::SERVER_ERROR, $e->getMessage());
             //return $this;
         }
-        if ($decoded['exp'] < time()) {
-            throw new BusinessException(ErrorCode::TOKEN_INVALID);
-        }
+
         if ($id = $decoded['id'] ?? null) {
             $this->user_id = $id;
             $this->sysUser = ApplicationContext::getContainer()->get(SysUserDao::class)->first($id);

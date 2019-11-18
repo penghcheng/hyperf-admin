@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Constants\Constants;
+use App\Constants\ErrorCode;
 use App\Kernel\Http\Response;
 use App\Service\Instance\JwtInstance;
 use App\Service\SysUserService;
@@ -80,7 +81,7 @@ class AdminMiddleware implements MiddlewareInterface
             JwtInstance::instance()->decode($token);
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
-            return $this->respone->error($e->getMessage(), 401);
+            return $this->respone->error($e->getMessage(), ErrorCode::TOKEN_INVALID);
         }
 
         $accessUserId = JwtInstance::instance()->build()->getId();

@@ -53,10 +53,9 @@ class AdminMiddleware implements MiddlewareInterface
     {
         $request = $this->container->get(RequestInterface::class);
         $token = $request->getHeaderLine(Constants::TOKEN);
-        if(empty($token)){
-            $token= $request->getQueryParams()['token'];
+        if (empty($token)) {
+            $token = $request->getQueryParams()['token'];
         }
-
         $uri = $request->getRequestUri();
         $urIs = explode('/', $uri);
 
@@ -81,7 +80,7 @@ class AdminMiddleware implements MiddlewareInterface
             JwtInstance::instance()->decode($token);
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
-            return $this->respone->error($e->getMessage(),401);
+            return $this->respone->error($e->getMessage(), 401);
         }
 
         $accessUserId = JwtInstance::instance()->build()->getId();
@@ -94,7 +93,7 @@ class AdminMiddleware implements MiddlewareInterface
 
             if (!empty($perms)) {
                 // 没有访问权限
-                if (!in_array($perms,$allowPermissions) && !in_array($perms, $permissions)) {
+                if (!in_array($perms, $allowPermissions) && !in_array($perms, $permissions)) {
                     return $this->respone->error(Constants::PERMISSION_DENIED);
                 }
             }

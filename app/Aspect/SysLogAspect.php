@@ -6,6 +6,7 @@ namespace App\Aspect;
 
 use App\Annotation\SysLogAnnotation;
 use App\Service\Instance\JwtInstance;
+use App\Service\QueueService;
 use App\Service\SysUserService;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Annotation\Inject;
@@ -32,6 +33,13 @@ class SysLogAspect extends AbstractAspect
      * @var SysUserService
      */
     public $sysUserService;
+
+    /**
+     * @Inject
+     * @var QueueService
+     */
+    protected $queueService;
+
 
     public function __construct(ContainerInterface $container)
     {
@@ -77,7 +85,12 @@ class SysLogAspect extends AbstractAspect
             'ip' => $ip,
             'create_date' => date("Y-m-d h:i:s", time())
         ];
-        $this->sysUserService->sysLogSave($data);
+
+        // 传统调用写入操作日志
+        //$this->sysUserService->sysLogSave($data);
+        // 异步队列 写入操作日志
+        $this->queueService->handleSysLog($data);
+
         // 在调用后进行某些处理
         return $result;
     }

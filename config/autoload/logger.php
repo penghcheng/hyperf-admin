@@ -26,7 +26,7 @@ return [
             'class' => Monolog\Handler\RotatingFileHandler::class,
             'constructor' => [
                 'filename' => BASE_PATH . '/runtime/logs/hyperf.log',
-                'level' => Monolog\Logger::DEBUG,
+                'level' => Monolog\Logger::ERROR,
             ],
         ],
         'formatter' => [

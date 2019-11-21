@@ -12,9 +12,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\SysUser;
-use App\Service\Instance\JwtInstance;
-
 class IndexController extends AbstractController
 {
     public function index()

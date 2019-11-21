@@ -4,6 +4,8 @@ Hyperf-Admin 基于Hyperf v1.1 开发的前后分离管理后台
 
 演示地址：[http://mrw.so/4I6mCR](http://mrw.so/4I6mCR) (账号密码：admin/admin)
 
+**QQ 交流群：235816687**
+
 ## 热加载开发
 
 运行根目录下的 zls-watch,一个技术朋友分享的,go写的一个插件,可以直接运行,其他命令可以查看 ./zls-watch -H

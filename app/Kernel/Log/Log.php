@@ -8,12 +8,26 @@
 
 namespace App\Kernel\Log;
 
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Logger\LoggerFactory;
 
 class Log
 {
+    /**
+     * 文件日志
+     * @param string $name
+     * @return \Psr\Log\LoggerInterface
+     */
     public static function get(string $name = 'app')
     {
-        return ApplicationContext::getContainer()->get(\Hyperf\Logger\LoggerFactory::class)->get($name);
+        return di()->get(LoggerFactory::class)->get($name);
+    }
+
+    /**
+     * 控制台日志
+     */
+    public static function stdLog()
+    {
+        return di()->get(StdoutLoggerInterface::class);
     }
 }

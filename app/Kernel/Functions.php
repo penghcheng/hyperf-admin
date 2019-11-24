@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
@@ -17,7 +18,10 @@ use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Utils\ApplicationContext;
 
-if (! function_exists('di')) {
+/**
+ * 获取Container
+ */
+if (!function_exists('di')) {
     /**
      * Finds an entry of the container by its identifier and returns it.
      * @param null|mixed $id
@@ -34,7 +38,27 @@ if (! function_exists('di')) {
     }
 }
 
-if (! function_exists('format_throwable')) {
+/**
+ * redis 客户端实例
+ */
+if (!function_exists('redis')) {
+    function redis()
+    {
+        return di()->get(\Redis::class);
+    }
+}
+
+/**
+ * 缓存实例 简单的缓存
+ */
+if (!function_exists('cache')) {
+    function cache()
+    {
+        return di()->get(\Psr\SimpleCache\CacheInterface::class);
+    }
+}
+
+if (!function_exists('format_throwable')) {
     /**
      * Format a throwable to string.
      * @param Throwable $throwable
@@ -46,7 +70,7 @@ if (! function_exists('format_throwable')) {
     }
 }
 
-if (! function_exists('queue_push')) {
+if (!function_exists('queue_push')) {
     /**
      * Push a job to async queue.
      */
@@ -57,7 +81,7 @@ if (! function_exists('queue_push')) {
     }
 }
 
-if (! function_exists('amqp_produce')) {
+if (!function_exists('amqp_produce')) {
     /**
      * Produce a amqp message.
      */

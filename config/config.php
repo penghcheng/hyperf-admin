@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
@@ -27,4 +28,5 @@ return [
             LogLevel::WARNING,
         ],
     ],
+    'sys_token_exp' => env("SYS_TOKEN_EXP", 43200), // 系统token expire
 ];

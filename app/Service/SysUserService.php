@@ -9,6 +9,7 @@
 namespace App\Service;
 
 
+use App\Constants\Constants;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\Dao\SysConfigDao;
@@ -89,7 +90,7 @@ class SysUserService extends Service
             return json_decode($cacheMenuNav, true);
         }*/
 
-        if ($user_id != 1) {
+        if ($user_id != Constants::SYS_ADMIN_ID) {
 
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
             $role_ids = $role_ids->toArray();
@@ -178,7 +179,7 @@ class SysUserService extends Service
     public function getSysNemuList(int $user_id): array
     {
 
-        if ($user_id != 1) {
+        if ($user_id != Constants::SYS_ADMIN_ID) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $user_id)->pluck('role_id');
             $role_ids = $role_ids->toArray();
             $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (" . implode(',', $role_ids) . ");");
@@ -440,7 +441,7 @@ class SysUserService extends Service
      */
     public function sysRoleSave(int $userId, string $roleName, $remark, array $menuIdList, string $flag = 'add', $roleId = 0): ?bool
     {
-        if ($userId != 1) {
+        if ($userId != Constants::SYS_ADMIN_ID) {
             $role_ids = Db::table('sys_user_role')->where("user_id", $userId)->pluck('role_id');
             $role_ids = $role_ids->toArray();
             $datas = Db::select("SELECT * FROM sys_role_menu where role_id in (" . implode(',', $role_ids) . ");");
@@ -550,7 +551,7 @@ class SysUserService extends Service
     {
         Db::beginTransaction();
         try {
-            if ($userId == 1) {
+            if ($userId == Constants::SYS_ADMIN_ID) {
 
                 Db::table('sys_user')->whereIn("user_id", $params)->delete();
                 Db::table('sys_user_role')->whereIn("user_id", $params)->delete();
@@ -585,7 +586,7 @@ class SysUserService extends Service
 
         Db::beginTransaction();
         try {
-            if ($userId == 1) {
+            if ($userId == Constants::SYS_ADMIN_ID) {
 
                 Db::table('sys_role')->whereIn("role_id", $params)->delete();
                 Db::table('sys_role_menu')->whereIn("role_id", $params)->delete();

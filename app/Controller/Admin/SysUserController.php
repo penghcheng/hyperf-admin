@@ -57,7 +57,7 @@ class SysUserController extends AbstractController
             $token = JwtInstance::instance()->encode($sysUser);
             return $this->response->success([
                 'token' => $token,
-                'expire' => 43200
+                'expire' => config("sys_token_exp"),
             ]);
 
         } catch (\Exception $e) {

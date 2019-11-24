@@ -19,4 +19,7 @@ class Constants
     const TOKEN = 'token';
 
     const PERMISSION_DENIED = 'Permission denied';
+
+    // 系统超级管理员id
+    const SYS_ADMIN_ID = 1;
 }

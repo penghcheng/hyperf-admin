@@ -37,7 +37,7 @@ class JwtInstance
         return JWT::encode([
             'iss' => 'xxx.com', //签发者 可选
             'iat' => time(), //签发时间
-            'exp' => time() + 12 * 3600,
+            'exp' => time() + config("sys_token_exp"),
             'id' => $sysUser->user_id
         ], self::KEY);
     }

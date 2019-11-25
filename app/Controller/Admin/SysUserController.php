@@ -13,6 +13,7 @@ namespace App\Controller\Admin;
 
 
 use App\Annotation\SysLogAnnotation;
+use App\Constants\Constants;
 use App\Controller\AbstractController;
 use App\Model\Dao\SysUserDao;
 use App\Service\Formatter\SysUserFormatter;
@@ -204,7 +205,7 @@ class SysUserController extends AbstractController
             return $this->response->error("提交错误");
         }
 
-        if (in_array("1", $params)) {
+        if (in_array(Constants::SYS_ADMIN_ID, $params)) {
             return $this->response->error("超级管理员不能删除");
         }
 

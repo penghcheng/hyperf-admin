@@ -207,10 +207,15 @@ class SysUserService extends Service
      */
     public function getSysNemuSelect()
     {
-        $datas = Db::select('SELECT * FROM sys_menu where parent_id in (0,1) order by order_num ASC ;');
+        $datas = Db::select('SELECT * FROM sys_menu where parent_id = 0 order by order_num ASC ;');
 
         if (empty($datas)) {
             return [];
+        } else {
+            foreach ($datas as $k => $v) {
+                $tmp = Db::select('SELECT * FROM sys_menu where parent_id = ' . $v['menu_id'] . ' order by order_num ASC ;');
+                $datas = array_merge($datas, $tmp);
+            }
         }
         $menu_ids = array_column($datas, 'menu_id');
         $menu_ids = array_unique($menu_ids);

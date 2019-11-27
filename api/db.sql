@@ -30,19 +30,6 @@ CREATE TABLE `sys_captcha` (
 -- Records of sys_captcha
 -- ----------------------------
 INSERT INTO `sys_captcha` VALUES ('05b66c15-3c82-4df5-8d59-3639e7e8211c', 'p5e75', '2019-10-21 16:40:21');
-INSERT INTO `sys_captcha` VALUES ('06d4d503-ae31-4f29-8d39-1fd300c8078f', 'ndw3x', '2019-10-18 14:31:40');
-INSERT INTO `sys_captcha` VALUES ('0c712c0d-e56a-4c65-8594-64ddd9821f7e', 'xyxp5', '2019-10-22 16:51:23');
-INSERT INTO `sys_captcha` VALUES ('1e8e8fe8-de8f-4ced-86ac-44aaf79958b0', 'wc8b2', '2019-10-22 10:09:38');
-INSERT INTO `sys_captcha` VALUES ('365d566e-2343-4574-8318-3bf0740c391a', 'nfwn8', '2019-10-18 14:19:34');
-INSERT INTO `sys_captcha` VALUES ('47fea502-f607-41d3-8429-3ba69c0a64d9', '28b2m', '2019-10-21 15:06:43');
-INSERT INTO `sys_captcha` VALUES ('62ee6c12-1860-42ee-8f84-b6aef559ca2c', 'w4pp6', '2019-10-18 14:19:12');
-INSERT INTO `sys_captcha` VALUES ('6b7b7f3f-4511-4f46-8f0d-71c2863eea1f', '8ggyy', '2019-10-21 15:04:00');
-INSERT INTO `sys_captcha` VALUES ('8a26cb85-cbfd-46e6-86ba-398a710c3a24', 'c2yfb', '2019-10-21 09:58:12');
-INSERT INTO `sys_captcha` VALUES ('a1bd8071-1daa-4647-8628-3e3230cf0264', '4ewcy', '2019-10-22 09:19:28');
-INSERT INTO `sys_captcha` VALUES ('b5f84085-c917-45e5-8471-3c5c0e693fa6', '7fgan', '2019-10-18 14:22:07');
-INSERT INTO `sys_captcha` VALUES ('c4bbd7fd-0d9b-4648-8434-2a8f084a0ca0', '8wxwc', '2019-10-21 09:30:04');
-INSERT INTO `sys_captcha` VALUES ('d0e31491-428b-4a4f-8d76-3f18afb56538', 'nbn24', '2019-10-22 09:19:30');
-INSERT INTO `sys_captcha` VALUES ('efa066c0-bf4d-4615-8bb3-5a09d9ae1715', '7a7cf', '2019-10-21 14:40:03');
 
 -- ----------------------------
 -- Table structure for sys_config

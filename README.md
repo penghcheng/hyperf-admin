@@ -14,7 +14,8 @@ Hyperf-Admin 基于Hyperf v1.1 开发的前后分离管理后台
     ./zls-watch
     
 ## 安装步骤
-    docker run -v /docker/www/hyperf-api:/hyperf-skeleton -p 8080:9501 -it --entrypoint /bin/sh hyperf/hyperf:7.2-alpine-cli-4.4.7
+
+`docker run -v /docker/www/hyperf-api:/hyperf-skeleton -p 8080:9501 -it --entrypoint /bin/bash hyperf/hyperf:7.2-alpine-cli-4.4.7`
 
 * ###### -v /docker/www/hyperf-api:/hyperf-skeleton
     >/docker/www/hyperf-api：宿主机目录 ， /hyperf-skeleton：docker目录

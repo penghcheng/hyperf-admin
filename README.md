@@ -12,6 +12,15 @@ Hyperf-Admin 基于Hyperf v1.1 开发的前后分离管理后台
 
     chmod +x ./zls-watch
     ./zls-watch
+    
+## 安装步骤
+    docker run -v /docker/www/hyperf-api:/hyperf-skeleton -p 8080:9501 -it --entrypoint /bin/sh hyperf/hyperf:7.2-alpine-cli-4.4.7
+
+* ###### -v /docker/www/hyperf-api:/hyperf-skeleton
+    >/docker/www/hyperf-api：宿主机目录 ， /hyperf-skeleton：docker目录
+    
+* ###### -p 8080:9501
+    > 8080:本地端口 ， 9501：docker下Hyperf配置文件servers的端口
 
 ## 功能介绍
 

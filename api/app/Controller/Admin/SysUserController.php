@@ -235,6 +235,10 @@ class SysUserController extends AbstractController
             return $this->response->error("提交错误");
         }
 
+        if(Constants::SYS_ADMIN_ID == $userId){
+            return $this->response->error("测试环境Admin密码允许修改");
+        }
+
         $format = SysUserFormatter::instance()->base($sysUser);
 
         if (!password_verify($params['password'], $format['password'])) {

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Logger\LoggerFactory;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Utils\ApplicationContext;
 
@@ -33,6 +35,26 @@ if (!function_exists('di')) {
         }
 
         return $container;
+    }
+}
+
+/**
+ * 控制台日志
+ */
+if (!function_exists('stdLog')) {
+    function stdLog()
+    {
+        return di()->get(StdoutLoggerInterface::class);
+    }
+}
+
+/**
+ * 文件日志
+ */
+if (!function_exists('logger')) {
+    function logger($name = 'hyperf', $group = 'default')
+    {
+        return di()->get(LoggerFactory::class)->get($name, $group);
     }
 }
 

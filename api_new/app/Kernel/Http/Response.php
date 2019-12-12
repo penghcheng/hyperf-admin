@@ -38,6 +38,15 @@ class Response
     }
 
     /**
+     * @param $data
+     * @return PsrResponseInterface
+     */
+    public function json($data)
+    {
+        return $this->response->json($data);
+    }
+
+    /**
      * @param array $data
      * @return PsrResponseInterface
      */
@@ -48,15 +57,6 @@ class Response
             'msg' => 'success'
         ], $data);
 
-        return $this->response->json($data);
-    }
-
-    /**
-     * @param $data
-     * @return PsrResponseInterface
-     */
-    public function json($data)
-    {
         return $this->response->json($data);
     }
 

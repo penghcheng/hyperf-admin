@@ -33,7 +33,6 @@ if (!function_exists('di')) {
         if ($id) {
             return $container->get($id);
         }
-
         return $container;
     }
 }

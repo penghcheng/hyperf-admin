@@ -65,7 +65,7 @@ class Response
      * @param int $code
      * @return PsrResponseInterface
      */
-    public function error($message = '', $code = ErrorCode::SERVER_ERROR)
+    public function error($code = ErrorCode::SERVER_ERROR, $message = '')
     {
         return $this->response->json([
             'code' => $code,

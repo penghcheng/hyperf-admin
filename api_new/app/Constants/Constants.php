@@ -10,11 +10,16 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
  */
 
-return [
-    'handler' => [
-        'http' => [
-            //App\Exception\Handler\AppExceptionHandler::class,
-            App\Exception\Handler\BusinessExceptionHandler::class,
-        ],
-    ],
-];
+namespace App\Constants;
+
+class Constants
+{
+    const X_TOKEN = 'X-Token';
+
+    const TOKEN = 'token';
+
+    const PERMISSION_DENIED = 'Permission denied';
+
+    // 系统超级管理员id
+    const SYS_ADMIN_ID = 1;
+}

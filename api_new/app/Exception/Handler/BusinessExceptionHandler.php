@@ -55,7 +55,8 @@ class BusinessExceptionHandler extends ExceptionHandler
 
         if ($throwable instanceof ValidationException) {
             $message = $throwable->validator->errors()->first();
-            return $this->response->error(ErrorCode::PARAMS_INVALID, $message);
+            //return $this->response->error(ErrorCode::PARAMS_INVALID, $message);
+            return $this->response->error(ErrorCode::SERVER_ERROR, $message);
         }
 
         $this->logger->error(format_throwable($throwable));

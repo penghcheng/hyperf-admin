@@ -27,4 +27,5 @@ return [
             LogLevel::WARNING,
         ],
     ],
+    'sys_token_exp' => env("SYS_TOKEN_EXP", 43200), // 系统token expire
 ];

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Kernel;
+namespace App\Kernel\Util;
 
 use App\Constants\ErrorCode;
 use App\Dao\SysUserDao;

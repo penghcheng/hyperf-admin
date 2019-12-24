@@ -10,7 +10,7 @@ namespace App\Controller\Admin;
 
 
 use App\Controller\AbstractController;
-use App\Kernel\JwtInstance;
+use App\Kernel\Util\JwtInstance;
 use App\Request\LoginRequest;
 use App\Service\SysService;
 use Hyperf\Di\Annotation\Inject;

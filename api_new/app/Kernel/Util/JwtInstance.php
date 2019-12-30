@@ -51,7 +51,7 @@ class JwtInstance
             logger('jwt')->error($e->getMessage());
             throw new BusinessException(ErrorCode::TOKEN_INVALID, $e->getMessage());
         } catch (\Throwable $e) {
-            Log::get()->error($e->getMessage());
+            logger('jwt')->error($e->getMessage());
             throw new BusinessException(ErrorCode::SERVER_ERROR, $e->getMessage());
         }
 

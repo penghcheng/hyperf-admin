@@ -46,4 +46,18 @@ class SysUserController extends AbstractController
             return $this->response->error($e->getMessage());
         }
     }
+
+    /**
+     * 用户信息
+     */
+    public function getInfoByLoginUserId()
+    {
+
+        $userId = JwtInstance::instance()->build()->getId();
+        $model = $this->sysService->getSysUserData($userId);
+
+        return $this->response->success([
+            'user' => $model
+        ]);
+    }
 }

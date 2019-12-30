@@ -52,12 +52,12 @@ class AdminMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $request = $this->container->get(RequestInterface::class);
+        //$request = $this->container->get(RequestInterface::class);
         $token = $request->getHeaderLine(Constants::TOKEN);
         if (empty($token)) {
             $token = $request->getQueryParams()['token'];
         }
-        $uri = $request->getRequestUri();
+        $uri = $request->getServerParams()['request_uri'];
         $urIs = explode('/', $uri);
 
         $perms = null;

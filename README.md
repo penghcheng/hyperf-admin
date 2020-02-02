@@ -2,7 +2,7 @@
 
 Hyperf-Admin 基于Hyperf v1.1 开发的前后分离管理后台
 
-演示地址：[http://mrw.so/4I6mCR](http://mrw.so/4I6mCR) (账号密码：admin/admin)
+演示地址：[http://mrw.so/4I6mCR](http://120.79.148.142:9515) (账号密码：admin/admin)
 
 **QQ 交流群：235816687**
 

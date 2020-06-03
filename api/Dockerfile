@@ -5,7 +5,7 @@
 # @contact  group@hyperf.io
 # @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
 
-FROM hyperf/hyperf:7.2-alpine-cli
+FROM hyperf/hyperf:7.2-alpine-v3.9-cli-v4.4.19
 LABEL maintainer="Hyperf Developers <group@hyperf.io>" version="1.0" license="MIT"
 
 ##
@@ -15,7 +15,7 @@ LABEL maintainer="Hyperf Developers <group@hyperf.io>" version="1.0" license="MI
 ARG timezone
 
 ENV TIMEZONE=${timezone:-"Asia/Shanghai"} \
-    COMPOSER_VERSION=1.9.0 \
+    COMPOSER_VERSION=1.9.1 \
     APP_ENV=prod
 
 # update
@@ -55,5 +55,10 @@ COPY . /opt/www
 RUN composer install --no-dev -o
 
 EXPOSE 9501
+EXPOSE 9502
+
+# RUN chmod 777 /opt/www/entrypoint.sh
+# ENTRYPOINT ["/opt/www/entrypoint.sh"]
 
 ENTRYPOINT ["php", "/opt/www/bin/hyperf.php", "start"]
+

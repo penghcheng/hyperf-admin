@@ -31,32 +31,7 @@ class ErrorCode extends AbstractConstants
     const TOKEN_INVALID = 401;
 
     /**
-     * @Message("用户没有注册")
+     * @Message("异常消息")
      */
-    const USER_NOT_REGIST = 701;
-
-    /**
-     * @Message("参数错误")
-     */
-    const PARAMS_INVALID = 1000;
-
-    /**
-     * @Message("用户不存在")
-     */
-    const USER_NOT_EXIST = 1001;
-
-    /**
-     * @Message("用户越权操作")
-     */
-    const USER_INVALID = 1002;
-
-    /**
-     * @Message("当前记录不存在")
-     */
-    const NOTE_NOT_EXIST = 1100;
-
-    /**
-     * @Message("涉嫌敏感话题，请修改后再试")
-     */
-    const SPAM_REJECT = 1201;
+    const COMMON_ERROR = -1;
 }

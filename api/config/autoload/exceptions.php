@@ -15,6 +15,7 @@ return [
         'http' => [
             //App\Exception\Handler\AppExceptionHandler::class,
             App\Exception\Handler\BusinessExceptionHandler::class,
+            \Hyperf\Validation\ValidationExceptionHandler::class,
         ],
     ],
 ];

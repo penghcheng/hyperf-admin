@@ -15,11 +15,12 @@ use Psr\Log\LogLevel;
 
 return [
     'app_name' => env('APP_NAME', 'skeleton'),
+    'oss_url'  => env('OSS_URL', ''),
     StdoutLoggerInterface::class => [
         'log_level' => [
             LogLevel::ALERT,
             LogLevel::CRITICAL,
-            LogLevel::DEBUG,
+            //LogLevel::DEBUG,
             LogLevel::EMERGENCY,
             LogLevel::ERROR,
             LogLevel::INFO,
@@ -27,5 +28,4 @@ return [
             LogLevel::WARNING,
         ],
     ],
-    'sys_token_exp' => env("SYS_TOKEN_EXP", 43200), // 系统token expire
 ];

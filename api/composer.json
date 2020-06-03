@@ -17,30 +17,25 @@
         "hyperf/cache": "~1.1.0",
         "hyperf/command": "~1.1.0",
         "hyperf/config": "~1.1.0",
-        "hyperf/contract": "~1.1.0",
-        "hyperf/database": "~1.1.0",
         "hyperf/db-connection": "~1.1.0",
-        "hyperf/devtool": "~1.1.0",
-        "hyperf/di": "~1.1.0",
-        "hyperf/dispatcher": "~1.1.0",
-        "hyperf/event": "~1.1.0",
-        "hyperf/exception-handler": "~1.1.0",
         "hyperf/framework": "~1.1.0",
         "hyperf/guzzle": "~1.1.0",
         "hyperf/http-server": "~1.1.0",
         "hyperf/logger": "~1.1.0",
         "hyperf/memory": "~1.1.0",
-        "hyperf/paginator": "~1.1.0",
-        "hyperf/pool": "~1.1.0",
         "hyperf/process": "~1.1.0",
         "hyperf/redis": "~1.1.0",
-        "hyperf/utils": "~1.1.0",
         "hyperf/constants": "~1.1.0",
         "hyperf/async-queue": "~1.1.0",
-        "firebase/php-jwt": "^5.0",
-        "qiniu/php-sdk": "^7.2",
-        "aliyuncs/oss-sdk-php": "^2.3",
-        "hyperf/validation": "^1.1"
+        "hyperf/model-cache": "~1.1.0",
+        "phper666/jwt-auth": "^3.0",
+        "hyperf/validation": "^1.1",
+        "daodao97/apidog": "^1.5",
+        "hyperf-libraries/sms": "dev-master",
+        "easyswoole/verifycode": "3.x",
+        "hyperf/filesystem": "^1.1",
+        "xxtime/flysystem-aliyun-oss": "^1.5",
+        "symfony/http-foundation": "^5.0"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",
@@ -49,6 +44,7 @@
         "mockery/mockery": "^1.0",
         "doctrine/common": "^2.9",
         "phpstan/phpstan": "^0.11.2",
+        "hyperf/devtool": "~1.1.0",
         "hyperf/testing": "~1.1.0"
     },
     "suggest": {
@@ -63,7 +59,7 @@
             "App\\": "app/"
         },
         "files": [
-            "app/Kernel/Functions.php"
+            "app/Common/Functions.php"
         ]
     },
     "autoload-dev": {

@@ -1,20 +1,16 @@
 <?php
-
-declare(strict_types=1);
 /**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://doc.hyperf.io
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2020/5/18
+ * Time: 10:46
  */
 
 namespace App\Exception\Handler;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
-use App\Kernel\Http\Response;
+use App\Common\Http\Response;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\Validation\ValidationException;
@@ -55,12 +51,11 @@ class BusinessExceptionHandler extends ExceptionHandler
 
         if ($throwable instanceof ValidationException) {
             $message = $throwable->validator->errors()->first();
-            //return $this->response->error(ErrorCode::PARAMS_INVALID, $message);
-            return $this->response->error(ErrorCode::SERVER_ERROR, $message);
+            return $this->response->error(ErrorCode::COMMON_ERROR, $message);
         }
 
         $this->logger->error(format_throwable($throwable));
-        return $this->response->error(ErrorCode::SERVER_ERROR, 'Server Error');
+        return $this->response->error(ErrorCode::SERVER_ERROR, $throwable->getMessage());
     }
 
     public function isValid(Throwable $throwable): bool

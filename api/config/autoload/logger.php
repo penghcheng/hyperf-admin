@@ -12,11 +12,21 @@ declare(strict_types=1);
 
 return [
     'default' => [
+
+        //'handler' => [
+        //    'class' => Monolog\Handler\StreamHandler::class,
+        //    'constructor' => [
+        //        'stream' => BASE_PATH . '/runtime/logs/hyperf.log',
+        //        'level' => Monolog\Logger::DEBUG,
+        //    ],
+        //],
+
+        /* 日志文件按日期轮转 */
         'handler' => [
-            'class' => Monolog\Handler\StreamHandler::class,
+            'class' => Monolog\Handler\RotatingFileHandler::class,
             'constructor' => [
-                'stream' => BASE_PATH . '/runtime/logs/hyperf.log',
-                'level' => Monolog\Logger::DEBUG,
+                'filename' => BASE_PATH . '/runtime/logs/hyperf.log',
+                'level' => Monolog\Logger::INFO,
             ],
         ],
         'formatter' => [

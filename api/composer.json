@@ -27,7 +27,9 @@
         "hyperf/redis": "~1.1.0",
         "hyperf/constants": "~1.1.0",
         "hyperf/async-queue": "~1.1.0",
-        "hyperf/model-cache": "~1.1.0"
+        "hyperf/model-cache": "~1.1.0",
+        "phper666/jwt-auth": "^3.0",
+        "hyperf/validation": "^1.1"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",
@@ -50,7 +52,9 @@
         "psr-4": {
             "App\\": "app/"
         },
-        "files": []
+        "files": [
+            "app/Common/Functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

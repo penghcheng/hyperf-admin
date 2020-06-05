@@ -47,15 +47,14 @@ class Response
      * @param $message
      * @return PsrResponseInterface
      */
-    public function success($data = "", $message='SUCCESS')
+    public function success($data = [], $message='success')
     {
-        $return = [
+        $data = array_merge([
             'code' => 0,
-            'msg' => $message,
-            'data' => $data
-        ];
+            'msg' => $message
+        ], $data);
 
-        return $this->response->json($return);
+        return $this->response->json($data);
     }
 
     /**
@@ -63,7 +62,7 @@ class Response
      * @param int $code
      * @return PsrResponseInterface
      */
-    public function error($code = ErrorCode::COMMON_ERROR, $message = '')
+    public function error($message = '',$code = ErrorCode::SERVER_ERROR)
     {
         return $this->response->json([
             'code' => $code,

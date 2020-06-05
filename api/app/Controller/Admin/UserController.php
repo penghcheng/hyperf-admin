@@ -61,12 +61,36 @@ class UserController extends AbstractController
             throw new BusinessException(ErrorCode::SERVER_ERROR, $errorMessage);
         }
 
-        $user = $this->sysUserService->login($input['username'],$input['password']);
+        $user = $this->sysUserService->login($input['username'], $input['password']);
+        //stdLog()->error(json_encode($user));
         $token = $this->jwt->getToken($user);
-        $data  = [
-            'token' => (string) $token,
-            'expire'   => $this->jwt->getTTL()
+        $data = [
+            'token' => (string)$token,
+            'expire' => $this->jwt->getTTL()
         ];
         return $this->response->success($data);
+    }
+
+    /**
+     * 用户信息
+     */
+    public function getInfoByLoginUserId()
+    {
+        $sys_user = $this->request->getAttribute("user");
+        $select = [
+            'user_id as userId',
+            'username',
+            'password',
+            'salt',
+            'email',
+            'mobile',
+            'status',
+            'create_user_id as createUserId',
+            'create_time as createTime'
+        ];
+        $data = $this->sysUserService->findForSelect($sys_user['user_id'], $select);
+        return $this->response->success([
+            'user' => $data
+        ]);
     }
 }

@@ -30,19 +30,41 @@ class SysUserService extends BaseService
      */
     public function login(string $username, string $password)
     {
-        $sys_user = $this->sysUserDao->getDataByWhereForSelect(['username'=>$username],false);
+        $sys_user = $this->sysUserDao->getDataByWhereForSelect(['username' => $username], false);
 
-        if(empty($sys_user)){
-            throw new BusinessException(ErrorCode::SERVER_ERROR,"用户名或密码错误");
+        if (empty($sys_user)) {
+            throw new BusinessException(ErrorCode::SERVER_ERROR, "用户名或密码错误");
         }
 
         if (!password_verify($password, $sys_user['password'])) {
-            throw new BusinessException(ErrorCode::SERVER_ERROR,"用户名或密码错误");
+            throw new BusinessException(ErrorCode::SERVER_ERROR, "用户名或密码错误");
         }
         if ($sys_user['status'] != 1) {
-            throw new BusinessException(ErrorCode::SERVER_ERROR,"该用户禁止登陆");
+            throw new BusinessException(ErrorCode::SERVER_ERROR, "该用户禁止登陆");
         }
 
         return $sys_user;
+    }
+
+    /**
+     * 根据管理员id/ids查找
+     * @param $user_id
+     * @param array $select
+     * @return array
+     */
+    public function findForSelect($user_id, array $select)
+    {
+        return $this->sysUserDao->findForSelect($user_id, $select);
+    }
+
+    /**
+     * 根据管理员id查找
+     * @param $user_id
+     * @param bool $useCache
+     * @return array
+     */
+    public function find($user_id,$useCache = false)
+    {
+        return $this->sysUserDao->find($user_id,$useCache);
     }
 }

@@ -57,6 +57,6 @@ Router::addGroup('/sys/', function () {
     Router::post('config/delete', 'App\Controller\Admin\ConfigController@sysConfigDelete'); // 删除参数
 
     Router::post('logout', 'App\Controller\Admin\UserController@sysLogout'); // 退出登录
-},
-    ['middleware' => [App\Middleware\Admin\AdminAuthMiddleware::class]]
+}
+,['middleware' => [App\Middleware\Admin\AdminAuthMiddleware::class]]
 );

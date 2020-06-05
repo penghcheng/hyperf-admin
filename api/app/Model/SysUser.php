@@ -23,6 +23,13 @@ class SysUser extends Model
      * @var string
      */
     protected $table = 'sys_user';
+
+    /**
+     * 定义主键
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
+
     /**
      * The attributes that are mass assignable.
      *

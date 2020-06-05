@@ -7,6 +7,7 @@ namespace App\Middleware\Admin;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\User;
+use App\Service\SysUserService;
 use App\Service\UserService;
 use Hyperf\Utils\Context;
 use Phper666\JWTAuth\JWT;
@@ -28,7 +29,6 @@ class AdminAuthMiddleware implements MiddlewareInterface
      * @var HttpResponse
      */
     protected $response;
-    protected $prefix = 'Bearer';
     protected $jwt;
 
     public function __construct(HttpResponse $response, JWT $jwt)
@@ -40,31 +40,27 @@ class AdminAuthMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $isValidToken = false;
-        $token = $request->getHeader('Authorization')[0] ?? '';
+        $token = $request->getHeader('token')[0] ?? '';
         if (strlen($token) > 0) {
-            $token = ucfirst($token);
-            $arr = explode($this->prefix . ' ', $token);
-            $token = $arr[1] ?? '';
             try {
-                if (strlen($token) > 0 && $this->jwt->checkToken()) {
+                if ($this->jwt->checkToken($token)) {
                     $isValidToken = true;
                 }
             } catch (\Exception $e) {
-                throw new BusinessException(ErrorCode::TOKEN_INVALID, '对不起，token验证没有通过');
+                throw new BusinessException(ErrorCode::SERVER_ERROR, 'sorry，token no pass!');
             }
+        }else{
+            throw new BusinessException(ErrorCode::SERVER_ERROR, 'token not null');
         }
 
         if ($isValidToken) {
-            $jwtData = $this->jwt->getParserData();
-
+            $jwtData = $this->jwt->getParserData($token);
             //更改上下文，写入用户信息
-            //User模型自行创建
-
-            /*$userService = di(UserService::class);
-            $user = $userService->user($jwtData['user_id']);
+            $userService = di()->get(SysUserService::class);
+            $user = $userService->find($jwtData['user_id'],true);
             if (empty($user)) {
-                throw new BusinessException(ErrorCode::TOKEN_INVALID, '对不起，token验证没有通过');
-            }*/
+                throw new BusinessException(ErrorCode::SERVER_ERROR, 'sorry，token no pass.');
+            }
 
             $request = Context::get(ServerRequestInterface::class);
             $request = $request->withAttribute('user', $jwtData);

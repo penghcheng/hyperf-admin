@@ -23,7 +23,7 @@ abstract class BaseDao
     {
         $key = substr($key, strripos($key, '\\') + 1);
         if (substr($key, -3) == 'Dao') {
-            $key = ucfirst(substr($key,0,strlen($key)-3));
+            $key = ucfirst(substr($key, 0, strlen($key) - 3));
             $fileName = BASE_PATH . "/app/Model/{$key}.php";
             $className = "App\\Model\\{$key}";
             if (file_exists($fileName)) {
@@ -117,14 +117,27 @@ abstract class BaseDao
     {
         $instance = $this->getModelInstance(get_called_class());
 
-        foreach ($where as $k => $v) {
-            $instance = is_array($v) ? $instance->where($k, $v[0], $v[1]) : $instance->where($k, $v);
+        if (is_array($where) && !empty($where)) {
+            foreach ($where as $k => $v) {
+                if (is_array($v)) {
+                    if (strtolower($v[0]) == 'in') {
+                        $instance = $instance->whereIn($k, explode(',', $v[1]));
+                    } else {
+                        $instance = $instance->where($k, $v[0], $v[1]);
+                    }
+                } else {
+                    $instance = $instance->where($k, $v);
+                }
+                //$instance = is_array($v) ? $instance->where($k, $v[0], $v[1]) : $instance->where($k, $v);
+            }
         }
+
         if (is_array($select) && $select[0] != '*') {
             $instance->select($select);
         }
-        if (!empty($order)){
-            $orderArr = explode(' ',$order);
+
+        if (!empty($order)) {
+            $orderArr = explode(' ', $order);
             $instance->orderBy(reset($orderArr), end($orderArr));
         }
         $query = $type ? $instance->get() : $instance->first();

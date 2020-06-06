@@ -22,6 +22,13 @@ class SysMenu extends Model
      * @var string
      */
     protected $table = 'sys_menu';
+
+    /**
+     * 定义主键
+     * @var string
+     */
+    protected $primaryKey = 'menu_id';
+
     /**
      * The attributes that are mass assignable.
      *

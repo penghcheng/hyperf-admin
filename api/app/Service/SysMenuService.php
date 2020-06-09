@@ -14,9 +14,28 @@ use App\Common\Dao\SysRoleMenuDao;
 use App\Common\Dao\SysUserRoleDao;
 use App\Constants\Constants;
 use Hyperf\Cache\Annotation\Cacheable;
+use Hyperf\Di\Annotation\Inject;
 
 class SysMenuService extends BaseService
 {
+    /**
+     * @Inject()
+     * @var SysMenuDao
+     */
+    private $sysMenuDao;
+
+    /**
+     * @Inject()
+     * @var SysUserRoleDao
+     */
+    private $sysUserRoleDao;
+
+    /**
+     * @Inject()
+     * @var SysRoleMenuDao
+     */
+    private $sysRoleMenuDao;
+
     /**
      * 菜单导航,权限信息
      * @param int $user_id
@@ -29,15 +48,12 @@ class SysMenuService extends BaseService
     {
         //$this->dispatcher->dispatch(new DeleteListenerEvent('sys-menu-update', [$userId])); //清理cacheable生成的缓存
 
-        $sysMenuDao = di()->get(SysMenuDao::class);
-        $sysUserRoleDao = di()->get(SysUserRoleDao::class);
-        $sysRoleMenuDao = di()->get(SysRoleMenuDao::class);
         if ($user_id != Constants::SYS_ADMIN_ID) {
-            $userRoleIdArrs = $sysUserRoleDao->getDataByWhereForSelect(['user_id' => $user_id], true, ['role_id']);
+            $userRoleIdArrs = $this->sysUserRoleDao->getDataByWhereForSelect(['user_id' => $user_id], true, ['role_id']);
             $role_ids = array_column($userRoleIdArrs, 'role_id');
-            $datas = $sysRoleMenuDao->getDataByWhereForSelect(['role_id' => ['in', implode(',', $role_ids)]], true);
+            $datas = $this->sysRoleMenuDao->getDataByWhereForSelect(['role_id' => ['in', implode(',', $role_ids)]], true);
         } else {
-            $datas = $sysMenuDao->getDataByWhereForSelect([], true);
+            $datas = $this->sysMenuDao->getDataByWhereForSelect([], true);
         }
         $menu_ids = array_column($datas, 'menu_id');
         $result = $this->getUserMenusPermissions($menu_ids);
@@ -55,8 +71,8 @@ class SysMenuService extends BaseService
         $menu_category = $sysMenuDao->getDataByWhereForSelect([
             'parent_id' => 0,
             'type' => 0,
-            'menu_id' => ['in' , implode(',', $menu_ids)]
-        ], true, ['menu_id as menuId','parent_id as parentId','name','url','perms','type','icon','order_num as orderNum'], 'orderNum asc');
+            'menu_id' => ['in', implode(',', $menu_ids)]
+        ], true, ['menu_id as menuId', 'parent_id as parentId', 'name', 'url', 'perms', 'type', 'icon', 'order_num as orderNum'], 'orderNum asc');
 
         $menuList = [];
         foreach ($menu_category as $key => $value) {

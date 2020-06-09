@@ -12,9 +12,16 @@ namespace App\Service;
 use App\Common\Dao\SysUserDao;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use Hyperf\Di\Annotation\Inject;
 
 class SysUserService extends BaseService
 {
+
+    /**
+     * @Inject()
+     * @var SysUserDao
+     */
+    private $sysUserDao;
 
     /**
      * 登录
@@ -24,8 +31,7 @@ class SysUserService extends BaseService
      */
     public function login(string $username, string $password)
     {
-        $sysUserDao = di()->get(SysUserDao::class);
-        $sys_user = $sysUserDao->getDataByWhereForSelect(['username' => $username], false);
+        $sys_user = $this->sysUserDao->getDataByWhereForSelect(['username' => $username], false);
 
         if (empty($sys_user)) {
             throw new BusinessException(ErrorCode::SERVER_ERROR, "用户名或密码错误");
@@ -49,8 +55,7 @@ class SysUserService extends BaseService
      */
     public function findForSelect($user_id, array $select)
     {
-        $sysUserDao = di()->get(SysUserDao::class);
-        return $sysUserDao->findForSelect($user_id, $select);
+        return $this->sysUserDao->findForSelect($user_id, $select);
     }
 
     /**
@@ -61,8 +66,7 @@ class SysUserService extends BaseService
      */
     public function find($user_id, $useCache = false)
     {
-        $sysUserDao = di()->get(SysUserDao::class);
-        return $sysUserDao->find($user_id, $useCache);
+        return $this->sysUserDao->find($user_id, $useCache);
     }
 
 }

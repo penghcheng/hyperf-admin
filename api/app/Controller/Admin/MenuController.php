@@ -10,6 +10,7 @@ namespace App\Controller\Admin;
 
 
 use App\Controller\AbstractController;
+use App\Service\SysMenuService;
 use App\Service\SysUserService;
 use Hyperf\Di\Annotation\Inject;
 
@@ -18,17 +19,17 @@ class MenuController extends AbstractController
 
     /**
      * @Inject()
-     * @var SysUserService
+     * @var SysMenuService
      */
-    private $sysUserService;
+    private $sysMenuService;
 
     /**
      * 登录用户的菜单和权限
      */
-    public function sysNenuNav()
+    public function sysMenuNav()
     {
         $sys_user = $this->request->getAttribute("user");
-        [$menuList, $permissions] = $this->sysUserService->getNemuNav($sys_user['user_id']);
+        [$menuList, $permissions] = $this->sysMenuService->getMenuNav($sys_user['user_id']);
         return $this->response->success([
             'menuList' => $menuList,
             'permissions' => $permissions

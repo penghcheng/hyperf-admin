@@ -19,7 +19,7 @@ Router::post('/sys/login', 'App\Controller\Admin\UserController@login'); //管�
 
 Router::addGroup('/sys/', function () {
 
-    Router::get('menu/nav', 'App\Controller\Admin\MenuController@sysNenuNav'); // 登录用户的菜单和权限
+    Router::get('menu/nav', 'App\Controller\Admin\MenuController@sysMenuNav'); // 登录用户的菜单和权限
     Router::get('menu/list', 'App\Controller\Admin\MenuController@sysMenuList'); // 获取Menu列表
     Router::get('menu/select', 'App\Controller\Admin\MenuController@sysMenuSelect'); // 选择Menu列表
     Router::get('menu/info/{id:\d+}', 'App\Controller\Admin\MenuController@sysMenuInfo'); // 获取某个菜单信息

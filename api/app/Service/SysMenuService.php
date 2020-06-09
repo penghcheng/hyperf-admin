@@ -67,8 +67,7 @@ class SysMenuService extends BaseService
      */
     private function getUserMenusPermissions(array $menu_ids)
     {
-        $sysMenuDao = di()->get(SysMenuDao::class);
-        $menu_category = $sysMenuDao->getDataByWhereForSelect([
+        $menu_category = $this->sysMenuDao->getDataByWhereForSelect([
             'parent_id' => 0,
             'type' => 0,
             'menu_id' => ['in', implode(',', $menu_ids)]
@@ -76,8 +75,8 @@ class SysMenuService extends BaseService
 
         $menuList = [];
         foreach ($menu_category as $key => $value) {
-            $model = $sysMenuDao->find($value['menuId']);
-            $menus = $sysMenuDao->getDataByWhereForSelect([
+            $model = $this->sysMenuDao->find($value['menuId']);
+            $menus = $this->sysMenuDao->getDataByWhereForSelect([
                 'parent_id' => $model['menu_id'],
                 'type' => 1,
                 'menu_id' => ['in', implode(',', $menu_ids)]
@@ -87,7 +86,7 @@ class SysMenuService extends BaseService
             $menuList[] = $model;
         }
 
-        $permissionArrs = $sysMenuDao->getDataByWhereForSelect([
+        $permissionArrs = $this->sysMenuDao->getDataByWhereForSelect([
             'menu_id' => ['in', implode(',', $menu_ids)]
         ], true, ['*'], 'order_num asc');
         $permissionArrs = array_column($permissionArrs, 'perms');

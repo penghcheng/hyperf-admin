@@ -48,6 +48,9 @@ Router::addGroup('/hy-admin/', function () {
     Router::post('sys/config/delete', 'App\Controller\Admin\SysConfigController@sysConfigDelete'); // 删除参数
 
     Router::post('sys/logout', 'App\Controller\Admin\SysUserController@sysLogout'); // 退出登录
+
+    Router::get('sys/ueditor/ue', 'App\Controller\Admin\UeditorController@ue'); // 富文本编辑器配置
+
 },
     ['middleware' => [App\Middleware\AdminMiddleware::class]]
 );

@@ -56,7 +56,6 @@ class SysMenuService extends BaseService
      * 菜单导航,权限信息
      * @param int $user_id
      * @return array
-     * @Cacheable(prefix="sys_menu", ttl=7200, listener="sys-menu-update")
      */
     public function getMenuNav(int $user_id): array
     {
@@ -90,15 +89,14 @@ class SysMenuService extends BaseService
 
         $menuList = [];
         foreach ($menu_category as $key => $value) {
-            $model = $this->sysMenuDao->find($value['menuId']);
+            //$model = $this->sysMenuDao->find($value['menuId']);
             $menus = $this->sysMenuDao->getDataByWhereForSelect([
-                'parent_id' => $model['menu_id'],
+                'parent_id' => $value['menuId'],
                 'type' => 1,
                 'menu_id' => ['in', implode(',', $menu_ids)]
-            ], true, ['*'], 'order_num asc');
-
-            $model['list'] = $menus;
-            $menuList[] = $model;
+            ], true, ['menu_id as menuId','parent_id as parentId','name','url','perms','type','icon','order_num as orderNum'], 'order_num asc');
+            $value['list'] = $menus;
+            $menuList[] = $value;
         }
 
         $permissionArrs = $this->sysMenuDao->getDataByWhereForSelect([

@@ -25,7 +25,7 @@ Router::addGroup('/sys/', function () {
     Router::get('menu/info/{id:\d+}', 'App\Controller\Admin\MenuController@sysMenuInfo'); // 获取某个菜单信息
     Router::post('menu/save', 'App\Controller\Admin\MenuController@sysMenuSave'); // 保存Menu
     Router::post('menu/update', 'App\Controller\Admin\MenuController@sysMenuUpdate'); // 更新Menu
-    Router::post('menu/delete/{id:\d+}', 'App\Controller\Admin\MenuController@sysMenuDelete'); // 更新Menu
+    Router::post('menu/delete/{id:\d+}', 'App\Controller\Admin\MenuController@sysMenuDelete'); // 删除Menu
 
     Router::get('user/info', 'App\Controller\Admin\UserController@getInfoByLoginUserId'); // 登录的用户信息
     Router::get('user/info/{id:\d+}', 'App\Controller\Admin\UserController@getInfoByUserId'); // 获取用户信息

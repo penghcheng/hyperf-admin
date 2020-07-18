@@ -50,4 +50,35 @@ class MenuController extends AbstractController
     {
 
     }
+
+
+    public function sysMenuInfo($id)
+    {
+    }
+
+    public function sysMenuSave()
+    {
+
+    }
+
+    public function sysMenuUpdate()
+    {
+
+    }
+
+    public function sysMenuDelete($id)
+    {
+//        return $this->response->error('测试环境不能删除');
+        $sys_user = $this->request->getAttribute("user");
+
+        $result = $this->sysMenuService->getSysMenuDelete($id);
+        if ($result === true) {
+            return $this->response->success();
+        }
+        if ($result === false) {
+            return $this->response->error('删除失败');
+        } else {
+            return $this->response->error('存在下级菜单不能直接删除');
+        }
+    }
 }

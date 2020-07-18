@@ -93,4 +93,20 @@ class UserController extends AbstractController
             'user' => $data
         ]);
     }
+
+    public function getInfoByUserId()
+    {
+
+    }
+
+    /**
+     * 退出
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function sysLogout()
+    {
+//        $this->jwt->logout();
+        return $this->response->success();
+    }
 }

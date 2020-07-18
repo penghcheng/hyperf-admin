@@ -11,10 +11,14 @@ namespace App\Service;
 
 use App\Common\Dao\SysMenuDao;
 use App\Common\Dao\SysRoleMenuDao;
+use App\Common\Dao\SysUserDao;
 use App\Common\Dao\SysUserRoleDao;
 use App\Constants\Constants;
 use Hyperf\Cache\Annotation\Cacheable;
+use Hyperf\Cache\Listener\DeleteListenerEvent;
+use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class SysMenuService extends BaseService
 {
@@ -37,6 +41,18 @@ class SysMenuService extends BaseService
     private $sysRoleMenuDao;
 
     /**
+     * @Inject
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
+    /**
+     * @Inject()
+     * @var SysUserDao
+     */
+    private $sysUserDao;
+
+    /**
      * 菜单导航,权限信息
      * @param int $user_id
      * @return array
@@ -44,6 +60,7 @@ class SysMenuService extends BaseService
      */
     public function getMenuNav(int $user_id): array
     {
+        //@Cacheable(prefix="sys_menu", ttl=7200, listener="sys-menu-update")
         //$this->dispatcher->dispatch(new DeleteListenerEvent('sys-menu-update', [$userId])); //清理cacheable生成的缓存
 
         if ($user_id != Constants::SYS_ADMIN_ID) {
@@ -130,9 +147,9 @@ class SysMenuService extends BaseService
     {
         if ($user_id != Constants::SYS_ADMIN_ID) {
             $role_ids = $this->sysUserRoleDao->pluck(['user_id', $user_id], ['role_id']);
-            $datas = $this->sysRoleMenuDao->getDataByWhereForSelect(['role_id' => ['in', implode(',', $role_ids)]],true);
+            $datas = $this->sysRoleMenuDao->getDataByWhereForSelect(['role_id' => ['in', implode(',', $role_ids)]], true);
         } else {
-            $datas = $this->sysRoleMenuDao->getDataByWhereForSelect([],true);
+            $datas = $this->sysRoleMenuDao->getDataByWhereForSelect([], true);
         }
 
         if (empty($datas)) {
@@ -143,7 +160,34 @@ class SysMenuService extends BaseService
 
         $l_feilds = "l.menu_id as menuId,l.parent_id as parentId,l.name,l.url,l.perms,l.type,l.icon,l.order_num as orderNum";
         $r_feilds = "r.name as parentName";
-        $sys_menus = $this->sysMenuDao->selfJoinSelf($menu_ids,$l_feilds,$r_feilds);
+        $sys_menus = $this->sysMenuDao->selfJoinSelf($menu_ids, $l_feilds, $r_feilds);
         return $sys_menus;
+    }
+
+    /**
+     * 删除菜单
+     * @param $id
+     * @return bool|int
+     */
+    public function getSysMenuDelete($id)
+    {
+        $hasParent = $this->sysMenuDao->getDataByWhereForSelect(['parent_id' => $id]);
+        if (!empty($hasParent)) {
+            return -1;
+        }
+        $sysUsers = $this->sysUserDao->getDataByWhereForSelect([], true);
+        Db::beginTransaction();
+        try {
+            $this->sysMenuDao->deleteByWhere(['menu_id' => $id]);
+            $this->sysRoleMenuDao->deleteByWhere(['menu_id' => $id]);
+            Db::commit();
+            foreach ($sysUsers as $sysUser) {
+                $this->dispatcher->dispatch(new DeleteListenerEvent('sys-menu-update', [$sysUser['user_id']])); //清理cacheable生成的缓存
+            }
+            return true;
+        } catch (\Throwable $ex) {
+            Db::rollBack();
+            return false;
+        }
     }
 }

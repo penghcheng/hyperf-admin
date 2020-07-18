@@ -71,41 +71,6 @@ abstract class BaseDao
     }
 
     /**
-     * saveData
-     * 创建/修改记录
-     * @param $data 保存数据
-     * @param bool $type 是否强制写入，适用于主键是规则生成情况
-     * @return null
-     */
-    public function saveData($data, $type = false)
-    {
-        $id = null;
-        $instance = $this->getModelInstance(get_called_class());
-
-        if (isset($data['id']) && $data['id'] && !$type) {
-            $id = $data['id'];
-            unset($data['id']);
-            $query = $instance->query()->find($id);
-            foreach ($data as $k => $v) {
-                $query->$k = $v;
-            }
-            $query->save();
-        } else {
-            foreach ($data as $k => $v) {
-                if ($k === 'id') {
-                    $id = $v;
-                }
-                $instance->$k = $v;
-            }
-            $instance->save();
-            if (!$id) {
-                $id = $instance->id;
-            }
-        }
-        return $id;
-    }
-
-    /**
      * 根据条件获取结果
      * @param $where
      * @param bool $type 是否查询多条
@@ -113,7 +78,7 @@ abstract class BaseDao
      * @param string $order 排序方式
      * @return array
      */
-    public function getDataByWhereForSelect($where, $type = false, $select = ['*'], $order = '')
+    public function getDataByWhereForSelect($where = [], $type = false, $select = ['*'], $order = '')
     {
         $instance = $this->getModelInstance(get_called_class());
 
@@ -168,5 +133,18 @@ abstract class BaseDao
         $instance = $this->getModelInstance(get_called_class());
 
         return $instance->where($where)->delete();
+    }
+
+    /**
+     * 获取一列的值
+     * @param array $where
+     * @param array $fields
+     * @return mixed
+     */
+    public function pluck(array $where = [], array $fields)
+    {
+        $instance = $this->getModelInstance(get_called_class());
+
+        return $instance->where($where)->pluck(implode(',', $fields));
     }
 }

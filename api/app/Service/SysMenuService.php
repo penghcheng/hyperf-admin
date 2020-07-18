@@ -40,8 +40,6 @@ class SysMenuService extends BaseService
      * 菜单导航,权限信息
      * @param int $user_id
      * @return array
-     */
-    /**
      * @Cacheable(prefix="sys_menu", ttl=7200, listener="sys-menu-update")
      */
     public function getMenuNav(int $user_id): array
@@ -121,5 +119,31 @@ class SysMenuService extends BaseService
         ];
         $permArrays = array_merge($permArrays, $allowPermissions);
         return [$menuList, $permArrays];
+    }
+
+    /**
+     * 获取Menu列表
+     * @param $user_id
+     * @return array
+     */
+    public function getSysMenuList($user_id)
+    {
+        if ($user_id != Constants::SYS_ADMIN_ID) {
+            $role_ids = $this->sysUserRoleDao->pluck(['user_id', $user_id], ['role_id']);
+            $datas = $this->sysRoleMenuDao->getDataByWhereForSelect(['role_id' => ['in', implode(',', $role_ids)]],true);
+        } else {
+            $datas = $this->sysRoleMenuDao->getDataByWhereForSelect([],true);
+        }
+
+        if (empty($datas)) {
+            return [];
+        }
+        $menu_ids = array_column($datas, 'menu_id');
+        $menu_ids = array_unique($menu_ids);
+
+        $l_feilds = "l.menu_id as menuId,l.parent_id as parentId,l.name,l.url,l.perms,l.type,l.icon,l.order_num as orderNum";
+        $r_feilds = "r.name as parentName";
+        $sys_menus = $this->sysMenuDao->selfJoinSelf($menu_ids,$l_feilds,$r_feilds);
+        return $sys_menus;
     }
 }

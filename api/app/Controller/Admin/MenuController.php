@@ -35,4 +35,19 @@ class MenuController extends AbstractController
             'permissions' => $permissions
         ]);
     }
+
+    /**
+     * 获取Menu列表根据用户的权限
+     */
+    public function sysMenuList()
+    {
+        $sys_user = $this->request->getAttribute("user");
+        $result = $this->sysMenuService->getSysMenuList($sys_user['user_id']);
+        return $this->response->json($result);
+    }
+
+    public function sysMenuSelect()
+    {
+
+    }
 }

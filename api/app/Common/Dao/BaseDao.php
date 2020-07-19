@@ -78,32 +78,24 @@ abstract class BaseDao
      * @param string $order 排序方式
      * @return array
      */
-    public function getDataByWhereForSelect($where = [], $type = false, $select = ['*'], $order = '')
+    public function getDataByWhereForSelect($where = [], $type = false, $select = ['*'], $order = [])
     {
         $instance = $this->getModelInstance(get_called_class());
 
-        if (is_array($where) && !empty($where)) {
-            foreach ($where as $k => $v) {
-                if (is_array($v)) {
-                    if (strtolower($v[0]) == 'in') {
-                        $instance = $instance->whereIn($k, explode(',', $v[1]));
-                    } else {
-                        $instance = $instance->where($k, $v[0], $v[1]);
-                    }
-                } else {
-                    $instance = $instance->where($k, $v);
-                }
-                //$instance = is_array($v) ? $instance->where($k, $v[0], $v[1]) : $instance->where($k, $v);
-            }
-        }
+        $instance = $this->getWhere($instance, $where);
 
         if (is_array($select) && $select[0] != '*') {
             $instance->select($select);
         }
-
-        if (!empty($order)) {
+        /*if (!empty($order) && is_string($order)) {
             $orderArr = explode(' ', $order);
             $instance->orderBy(reset($orderArr), end($orderArr));
+        }*/
+
+        if (!empty($order) && is_array($order)) {
+            foreach ($order as $k => $v) {
+                $instance->orderBy($k, $v);
+            }
         }
         $query = $type ? $instance->get() : $instance->first();
         return empty($query) ? $query : $query->toArray();
@@ -131,8 +123,8 @@ abstract class BaseDao
     public function deleteByWhere(array $where = [])
     {
         $instance = $this->getModelInstance(get_called_class());
-
-        return $instance->where($where)->delete();
+        $instance = $this->getWhere($instance, $where);
+        return $instance->delete();
     }
 
     /**
@@ -144,7 +136,81 @@ abstract class BaseDao
     public function pluck(array $where = [], array $fields)
     {
         $instance = $this->getModelInstance(get_called_class());
+        $instance = $this->getWhere($instance, $where);
+        return $instance->pluck(implode(',', $fields));
+    }
 
-        return $instance->where($where)->pluck(implode(',', $fields));
+    /**
+     * 获取总条数
+     * @param array $where
+     * @return mixed
+     */
+    public function count($where = [])
+    {
+        $instance = $this->getModelInstance(get_called_class());
+        $instance = $this->getWhere($instance, $where);
+        return $instance->count();
+    }
+
+    /**
+     * 获取分页数据
+     * @param array $where 条件
+     * @param int $pageSize 每页大小
+     * @param int $currPage 当前页
+     * @param array $select 显示字段
+     * @param $order 排序, 字符串或者数组
+     * @return array
+     */
+    public function paginator($where = [], int $pageSize = 10, int $currPage = 1, $select = ['*'], $order = [])
+    {
+        $instance = $this->getModelInstance(get_called_class());
+        $instance = $this->getWhere($instance, $where);
+        $totalCount = $instance->count();
+        list($totalPage, $startCount) = page($totalCount, $pageSize, $currPage);
+
+        /*if (!empty($order) && is_string($order)) {
+            $orderArr = explode(' ', $order);
+            $instance->orderBy(reset($orderArr), end($orderArr));
+        }*/
+
+        if (!empty($order) && is_array($order)) {
+            foreach ($order as $k => $v) {
+                $instance->orderBy($k, $v);
+            }
+        }
+        $list = $instance->select($select)->offset($startCount)->limit($pageSize)->get();
+        $result = [
+            'totalCount' => $totalCount,
+            'pageSize' => $pageSize,
+            'totalPage' => $totalPage,
+            'currPage' => $currPage,
+            'list' => $list
+        ];
+        return $result;
+    }
+
+    /**
+     * 返回where之后的Instance
+     * @param $where
+     * @param $instance
+     * @return mixed
+     */
+    private function getWhere($instance, $where = [])
+    {
+        if (is_array($where) && !empty($where)) {
+            foreach ($where as $k => $v) {
+                if (is_array($v)) {
+                    if (strtolower($v[0]) == 'in') {
+                        $instance = $instance->whereIn($k, explode(',', $v[1]));
+                    } else {
+                        $instance = $instance->where($k, $v[0], $v[1]);
+                    }
+                } else {
+                    $instance = $instance->where($k, $v);
+                }
+                //$instance = is_array($v) ? $instance->where($k, $v[0], $v[1]) : $instance->where($k, $v);
+            }
+        }
+        return $instance;
     }
 }

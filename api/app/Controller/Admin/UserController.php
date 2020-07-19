@@ -94,6 +94,24 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * 管理员用户列表
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sysUserList()
+    {
+        $sys_user = $this->request->getAttribute("user");
+        $username = (string)$this->request->input('username');
+        $page = (int)$this->request->input('page');
+        $limit = (int)$this->request->input('limit');
+
+        $result = $this->sysUserService->getSysUserList($sys_user['user_id'], $username, $limit, $page);
+
+        return $this->response->success([
+            'page' => $result
+        ]);
+    }
+
     public function getInfoByUserId()
     {
 

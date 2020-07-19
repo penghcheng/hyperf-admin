@@ -10,6 +10,7 @@ namespace App\Service;
 
 
 use App\Common\Dao\SysUserDao;
+use App\Constants\Constants;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use Hyperf\Di\Annotation\Inject;
@@ -69,4 +70,28 @@ class SysUserService extends BaseService
         return $this->sysUserDao->find($user_id, $useCache);
     }
 
+    /**
+     * 管理员管理list
+     * @param int $user_id
+     * @param string $username
+     * @param int $pageSize
+     * @param int $currPage
+     * @return array
+     */
+    public function getSysUserList(int $user_id, string $username, int $pageSize = 10, int $currPage = 1): array
+    {
+        $where = [];
+        if (!empty($username)) {
+            $where['username'] = ['like', "'%" . $username . "%'"];
+        }
+        if ($user_id != Constants::SYS_ADMIN_ID) {
+            $where['create_user_id'] = $user_id;
+        }
+
+        $list = $this->sysUserDao->paginator($where, $pageSize, $currPage,
+            ['user_id as userId', 'username', 'status', 'salt', 'password', 'mobile', 'email', 'create_user_id as createUserId', 'create_time as createTime']
+        );
+
+        return $list;
+    }
 }

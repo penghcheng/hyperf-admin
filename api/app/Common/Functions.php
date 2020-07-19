@@ -221,3 +221,28 @@ if (!function_exists('check_mobile')) {
         return false;
     }
 }
+
+if (!function_exists('page')) {
+    /**
+     * 计算总页数等
+     * @param int $pageSize
+     * @param int $currPage
+     * @param $totalCount
+     * @return array
+     */
+    function page($totalCount, int $pageSize = 10, int $currPage = 1): array
+    {
+        if ($totalCount > 0) {
+            $totalPage = ceil($totalCount / $pageSize);
+        } else {
+            $totalPage = 0;
+        }
+
+        if ($currPage <= 0 || $currPage > $totalPage) {
+            $currPage = 1;
+        }
+
+        $startCount = ($currPage - 1) * $pageSize;
+        return array($totalPage, $startCount);
+    }
+}

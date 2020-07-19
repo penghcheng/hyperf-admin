@@ -81,11 +81,12 @@ class SysMenuService extends BaseService
      */
     private function getUserMenusPermissions(array $menu_ids)
     {
+        $orderBy = ['order_num' => 'asc'];
         $menu_category = $this->sysMenuDao->getDataByWhereForSelect([
             'parent_id' => 0,
             'type' => 0,
             'menu_id' => ['in', implode(',', $menu_ids)]
-        ], true, ['menu_id as menuId', 'parent_id as parentId', 'name', 'url', 'perms', 'type', 'icon', 'order_num as orderNum'], 'orderNum asc');
+        ], true, ['menu_id as menuId', 'parent_id as parentId', 'name', 'url', 'perms', 'type', 'icon', 'order_num as orderNum'], $orderBy);
 
         $menuList = [];
         foreach ($menu_category as $key => $value) {
@@ -94,14 +95,14 @@ class SysMenuService extends BaseService
                 'parent_id' => $value['menuId'],
                 'type' => 1,
                 'menu_id' => ['in', implode(',', $menu_ids)]
-            ], true, ['menu_id as menuId','parent_id as parentId','name','url','perms','type','icon','order_num as orderNum'], 'order_num asc');
+            ], true, ['menu_id as menuId', 'parent_id as parentId', 'name', 'url', 'perms', 'type', 'icon', 'order_num as orderNum'], $orderBy);
             $value['list'] = $menus;
             $menuList[] = $value;
         }
 
         $permissionArrs = $this->sysMenuDao->getDataByWhereForSelect([
             'menu_id' => ['in', implode(',', $menu_ids)]
-        ], true, ['*'], 'order_num asc');
+        ], true, ['*'], $orderBy);
         $permissionArrs = array_column($permissionArrs, 'perms');
 
         $permissions = [];

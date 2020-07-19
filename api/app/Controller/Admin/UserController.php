@@ -102,8 +102,8 @@ class UserController extends AbstractController
     {
         $sys_user = $this->request->getAttribute("user");
         $username = (string)$this->request->input('username');
-        $page = (int)$this->request->input('page');
-        $limit = (int)$this->request->input('limit');
+        $page = (int)$this->request->input('page', 1);
+        $limit = (int)$this->request->input('limit', 10);
 
         $result = $this->sysUserService->getSysUserList($sys_user['user_id'], $username, $limit, $page);
 
